@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DiscussScreen extends StatelessWidget {
+class NewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -8,7 +8,7 @@ class DiscussScreen extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       color: Colors.black87,
       child: Column(children: <Widget> [
-        Text('Discussion')
+        Text('NEWS')
       ],),
     );
   }
