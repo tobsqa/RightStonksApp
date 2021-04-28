@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
+import 'package:flutter_app/models/stock.dart';
 
 class WatchlistScreen extends StatelessWidget {
   @override
@@ -45,11 +47,16 @@ class WatchlistScreen extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     children: [
                       ScreenCategorys('images/bookmark.png', 'Watchlist'),
-                      ScreenCategorys('images/gorilla.png', 'Memestocks'),
+                      ScreenCategorys('images/gorilla.png', 'WSB'),
                       ScreenCategorys('images/fire.png', 'Hot'),
                       ScreenCategorys('images/money.png', 'Indices'),
                     ],
-                  ))
+                  )),
+              Container(
+                margin: EdgeInsets.only(top: 15, left: 5, right: 5),
+                height: MediaQuery.of(context).size.height - 310,
+                child: StockList(stocks: Stock.getAll()),
+              )
             ],
           ),
         ));

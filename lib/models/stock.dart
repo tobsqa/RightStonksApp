@@ -9,7 +9,7 @@ class Stock {
   static List<Stock> getAll() {
 
     List<Stock> stocks = List<Stock>();
-    stocks.add(Stock(company: "Apple Computers",symbol: "APPLE", price: 258));
+    stocks.add(Stock(company: "Apple",symbol: "APPLE", price: 258));
     stocks.add(Stock(company: "Alphabet",symbol: "ALPH", price: 800));
     stocks.add(Stock(company: "General Electronic",symbol: "GE", price: 56.00));
     stocks.add(Stock(company: "Home Depot",symbol: "HE", price: 178));
