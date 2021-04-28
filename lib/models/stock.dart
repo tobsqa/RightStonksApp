@@ -10,7 +10,6 @@ class Stock {
 
     List<Stock> stocks = List<Stock>();
     stocks.add(Stock(company: "Apple",symbol: "APPLE", price: 258));
-    stocks.add(Stock(company: "Alphabet",symbol: "ALPH", price: 800));
     stocks.add(Stock(company: "General Electronic",symbol: "GE", price: 56.00));
     stocks.add(Stock(company: "Home Depot",symbol: "HE", price: 178));
     stocks.add(Stock(company: "Evergreen Solar",symbol: "EVR", price: 9.0));
@@ -18,7 +17,7 @@ class Stock {
     stocks.add(Stock(company: "Samsung",symbol: "SAM", price: 134));
     stocks.add(Stock(company: "Snapchat",symbol: "SNAP", price: 45));
     stocks.add(Stock(company: "Microsoft",symbol: "MSOFT", price: 400));
-    stocks.add(Stock(company: "Google",symbol: "GOOG", price: 1800));   ;
+    stocks.add(Stock(company: "GameStop",symbol: "GME", price: 18022));
 
     return stocks;
 

@@ -10,7 +10,7 @@ class StockList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        //physics: const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         separatorBuilder: (context, index) {
           return Divider(color: Colors.grey[500]);
         },

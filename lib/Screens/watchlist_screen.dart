@@ -10,8 +10,7 @@ class WatchlistScreen extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(top: 20, left: 15),
@@ -54,7 +53,7 @@ class WatchlistScreen extends StatelessWidget {
                   )),
               Container(
                 margin: EdgeInsets.only(top: 15, left: 5, right: 5),
-                height: MediaQuery.of(context).size.height - 310,
+                height: MediaQuery.of(context).size.height,
                 child: StockList(stocks: Stock.getAll()),
               )
             ],
