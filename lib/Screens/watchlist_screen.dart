@@ -40,7 +40,7 @@ class WatchlistScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(16))))))),
               Container(
-                  height: 80,
+                  height: 75,
                   margin: EdgeInsets.only(top: 20, left: 15),
                   child: ListView(
                     scrollDirection: Axis.horizontal,
@@ -49,6 +49,7 @@ class WatchlistScreen extends StatelessWidget {
                       ScreenCategorys('images/gorilla.png', 'WSB'),
                       ScreenCategorys('images/fire.png', 'Hot'),
                       ScreenCategorys('images/money.png', 'Indices'),
+                      ScreenCategorys('images/bitcoin.png', 'Crypto'),
                     ],
                   )),
               Container(
@@ -63,36 +64,39 @@ class WatchlistScreen extends StatelessWidget {
 }
 
 Widget ScreenCategorys(String image, String name) {
-  return Container(
-    margin: EdgeInsets.only(right: 15),
-    width: 80,
-    decoration: BoxDecoration(
-      color: Colors.grey[900],
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.only(top: 8),
-          height: 40,
-          width: 40,
-          child: Image.asset(image),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 8),
-          child: Text(
-            name,
-            style: TextStyle(
-              color: Colors.grey[500],
-              fontSize: 11,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
+  return SizedBox(
+      child: InkWell(
+          child: Container(
+            margin: EdgeInsets.only(right: 15),
+            width: 75,
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 8),
+                  height: 40,
+                  width: 40,
+                  child: Image.asset(image),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 8),
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 11,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-        )
-      ],
-    ),
-  );
+          onTap: () {}));
 }
