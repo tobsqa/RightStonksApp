@@ -1,14 +1,14 @@
 import 'dart:ui';
-
+import 'package:flutter_app/Screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => LineChartSample1State();
+  State<StatefulWidget> createState() => Stockscreen();
 }
 
-class LineChartSample1State extends State<AnalysisScreen> {
+class Stockscreen extends State<AnalysisScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,61 +18,116 @@ class LineChartSample1State extends State<AnalysisScreen> {
 }
 
 class TopBar extends StatelessWidget {
+  bool _state = true;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return StatefulBuilder(
+      builder: (context, StateSetter setState) => Container(
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
         child: SafeArea(
           child: ListView(
             children: <Widget>[
               AppBar(
-                title: const Text('AppBar Demo'),
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.alarm ),
-                    tooltip: 'Show Snackbar',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('This is a snackbar')));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_alert),
-                    tooltip: 'Go to the next page',
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute<void>(
-                        builder: (BuildContext context) {
-                          return Scaffold(
-                            appBar: AppBar(
-                              title: const Text('Next page'),
+                backgroundColor: Colors.black,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.arrow_back_ios_rounded),
+                        color: Colors.green,
+                        onPressed: () {}),
+                    IconButton(
+                      icon: _state
+                          ? Image.asset(
+                              "images/bookmark_white.png",
+                              height: 25,
+                              width: 25,
+                            )
+                          : Image.asset(
+                              "images/bookmark_white_green.png",
+                              height: 25,
+                              width: 25,
                             ),
-                            body: const Center(
-                              child: Text(
-                                'This is the next page',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                            ),
-                          );
-                        },
-                      ));
-                    },
-                  ),
-                ],
+                      tooltip: 'Show Snackbar',
+                      onPressed: () {
+                        setState(() => (_state = !_state));
+                        ScaffoldMessenger.of(context).showSnackBar(_state
+                            ? (const SnackBar(
+                                content: Text('removed from watchlist')))
+                            : (const SnackBar(
+                                content: Text('added to watchlist'))));
+                      },
+                    ),
+                  ],
+                ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 20, left: 15),
-                child: Text(
-                  'Ticker',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
+                margin: EdgeInsets.only(top: 20, left: 5, right: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Ticker',
+                      style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'StockName',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "\$1,234.56",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top:15, bottom: 15),
+                          child: SizedBox(
+                              width: 80,
+                              height: 35,
+                              child: InkWell(
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors.green),
+                                      child: Text("lol",
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                  onTap: () => setState(
+                                        () => (print("lol")),
+                                      ))),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 195,
+                      color: Colors.green,
+
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
