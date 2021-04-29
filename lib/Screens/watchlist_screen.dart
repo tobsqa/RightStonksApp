@@ -31,7 +31,9 @@ class WatchlistScreen extends StatelessWidget {
                           decoration: InputDecoration(
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               hintText: 'Search',
-                              prefix: Icon(Icons.search),
+                              prefix: Icon(Icons.search,
+                              color: Colors.grey[500],
+                              size: 20),
                               fillColor: Colors.grey[900],
                               filled: true,
                               border: OutlineInputBorder(
@@ -64,15 +66,14 @@ class WatchlistScreen extends StatelessWidget {
 }
 
 Widget ScreenCategorys(String image, String name) {
-  return SizedBox(
-      child: InkWell(
-          child: Container(
+  return Container(
             margin: EdgeInsets.only(right: 15),
             width: 75,
             decoration: BoxDecoration(
               color: Colors.grey[900],
               borderRadius: BorderRadius.circular(18),
             ),
+      child: InkWell(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,6 +98,7 @@ Widget ScreenCategorys(String image, String name) {
                 )
               ],
             ),
+          onTap: () {}
           ),
-          onTap: () {}));
+         );
 }

@@ -3,8 +3,10 @@ class Stock {
   final String symbol;
   final String company;
   final double price;
+  final String percent;
+  final String money;
 
-  Stock({this.symbol, this.company, this.price});
+  Stock({this.symbol, this.company, this.price, this.percent, this.money});
 
   static List<Stock> getAll() {
 
