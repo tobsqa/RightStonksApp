@@ -4,9 +4,20 @@ import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
 import 'package:flutter_app/models/stock.dart';
 
 class WatchlistScreen extends StatelessWidget {
+
+  final List _category = [
+    'Watchlist',
+    'WallStreetBets',
+    'Hot',
+    'Indices',
+    'Crypto',
+  ];
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return StatefulBuilder(
+        builder: (context, StateSetter setState) => Container(
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
         child: SafeArea(
@@ -15,7 +26,7 @@ class WatchlistScreen extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 20, left: 15),
                 child: Text(
-                  'Watchlist',
+                  _category[_currentIndex],
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 36,
@@ -61,12 +72,23 @@ class WatchlistScreen extends StatelessWidget {
               )
             ],
           ),
-        ));
+        )));
   }
 }
 
 Widget ScreenCategorys(String image, String name) {
-  return Container(
+
+  final List _category = [
+    'Watchlist',
+    'WallStreetBets',
+    'Hot',
+    'Indices',
+    'Crypto',
+  ];
+  int _currentIndex = 0;
+
+  return StatefulBuilder(
+      builder: (context, StateSetter setState) => Container(
             margin: EdgeInsets.only(right: 15),
             width: 75,
             decoration: BoxDecoration(
@@ -98,7 +120,7 @@ Widget ScreenCategorys(String image, String name) {
                 )
               ],
             ),
-          onTap: () {}
+          onTap: () => setState(() => _currentIndex),
           ),
-         );
+         ));
 }

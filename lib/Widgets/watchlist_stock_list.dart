@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/stock.dart';
+import 'package:flutter_app/models/wallstreetbets.dart';
+import 'package:flutter_app/models/hot.dart';
+import 'package:flutter_app/models/Indieces.dart';
+import 'package:flutter_app/models/Crypto.dart';
 import 'package:flutter_app/Widgets/percent_or_money_widget.dart';
 
 class StockList extends StatelessWidget {
