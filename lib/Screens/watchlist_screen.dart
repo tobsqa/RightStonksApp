@@ -43,7 +43,7 @@ class WatchlistScreen extends StatelessWidget {
                                       Radius.circular(16))))))),
               Container(
                   height: 75,
-                  margin: EdgeInsets.only(top: 20, left: 15),
+                  margin: EdgeInsets.only(top: 20, left: 16),
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
@@ -55,7 +55,7 @@ class WatchlistScreen extends StatelessWidget {
                     ],
                   )),
               Container(
-                margin: EdgeInsets.only(top: 15, left: 5, right: 5),
+                margin: EdgeInsets.only(top: 15, left: 10, right: 10),
                 height: MediaQuery.of(context).size.height,
                 child: StockList(stocks: Stock.getAll()),
               )
