@@ -19,7 +19,12 @@ class StockList extends StatelessWidget {
             itemBuilder: (context, index) {
               final stock = this.stocks[index];
 
-              return ListTile(
+              return Container(
+                color: Colors.black,
+                child: Material(
+                  color: Colors.transparent,
+                child: InkWell(
+                  child: ListTile(
                   contentPadding: EdgeInsets.all(10),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,22 +39,28 @@ class StockList extends StatelessWidget {
                               TextStyle(color: Colors.grey[500], fontSize: 20))
                     ],
                   ),
-                  trailing: SizedBox(
+                  trailing: Container(
                       width: 80,
                       height: 35,
-                      child: InkWell(
+                      child: Material (
+                          color: stock.money.contains("-")
+                              ? (Colors.red)
+                              : (Colors.green),
+                          borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
                           child: Container(
                               alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: stock.money.contains("-")
-                                      ? (Colors.red)
-                                      : (Colors.green)),
                               child: Text(
                                   _percent ? (stock.percent) : (stock.money),
                                   style: TextStyle(color: Colors.white))),
                           onTap: () =>
-                              setState(() => (_percent = !_percent)))));
+                              setState(() => (_percent = !_percent)))))),
+              onTap: () {
+                    print(stock.company);
+                    print(stock.symbol);
+                    print(stock.price);
+                  })));
             }));
   }
 }

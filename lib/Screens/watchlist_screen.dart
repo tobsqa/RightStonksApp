@@ -37,6 +37,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                   child: SizedBox(
                       height: 50,
                       child: TextField(
+                          enabled: false,
                           decoration: InputDecoration(
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               hintText: 'Search',
@@ -77,11 +78,11 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     return Container(
         margin: EdgeInsets.only(right: 15),
         width: 75,
-        decoration: BoxDecoration(
-          color: Colors.grey[900],
+        child: Material(
           borderRadius: BorderRadius.circular(18),
-        ),
+          color: Colors.grey[900],
         child: InkWell(
+          borderRadius: BorderRadius.circular(18),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,13 +113,13 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
               _list = mylist;
             });
           },
-        ));
+        )));
   }
 
 //Widget for diffrent Lists
   Widget List() {
     return Container(
-      margin: EdgeInsets.only(top: 15, left: 10, right: 10),
+      margin: EdgeInsets.only(top: 15,),
       height: MediaQuery.of(context).size.height,
       child: StockList(stocks: _list),
     );
