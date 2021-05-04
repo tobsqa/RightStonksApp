@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/stock.dart';
-import 'package:flutter_app/models/wallstreetbets.dart';
-import 'package:flutter_app/models/hot.dart';
-import 'package:flutter_app/models/Indieces.dart';
-import 'package:flutter_app/models/Crypto.dart';
 import 'package:flutter_app/Widgets/percent_or_money_widget.dart';
 
 class StockList extends StatelessWidget {
@@ -36,7 +32,6 @@ class StockList extends StatelessWidget {
                       Text("\$${stock.price}",
                           style:
                               TextStyle(color: Colors.grey[500], fontSize: 20))
-
                     ],
                   ),
                   trailing: SizedBox(
@@ -47,8 +42,11 @@ class StockList extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
-                                  color: stock.money.contains("-") ? (Colors.red):(Colors.green)),
-                              child: Text(_percent? (stock.percent):(stock.money),
+                                  color: stock.money.contains("-")
+                                      ? (Colors.red)
+                                      : (Colors.green)),
+                              child: Text(
+                                  _percent ? (stock.percent) : (stock.money),
                                   style: TextStyle(color: Colors.white))),
                           onTap: () =>
                               setState(() => (_percent = !_percent)))));

@@ -12,7 +12,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     HomeScreen(),
     AnalysisScreen(),
     WatchlistScreen(),
-    NewsScreen(),
+    Searchbar(),
     DiscussScreen(),
   ];
   int _currentIndex = 0;
