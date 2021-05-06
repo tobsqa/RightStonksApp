@@ -35,14 +35,14 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
               Padding(
                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                   child: SizedBox(
-                      height: 50,
+                      height: 45,
                       child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              hintStyle: TextStyle(color: Colors.grey[400]),
                               hintText: 'Search',
                               prefix: Icon(Icons.search,
-                                  color: Colors.grey[500], size: 20),
+                                  color: Colors.grey[400], size: 20),
                               fillColor: Colors.grey[900],
                               filled: true,
                               border: OutlineInputBorder(
@@ -98,7 +98,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                 child: Text(
                   name,
                   style: TextStyle(
-                    color: Colors.grey[500],
+                    color: Colors.grey[400],
                     fontSize: 11,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
