@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter_app/Screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Widgets/add_to_watchlist_button.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override
@@ -38,28 +39,7 @@ class TopBar extends StatelessWidget {
                         icon: Icon(Icons.arrow_back_ios_rounded),
                         color: Colors.green,
                         onPressed: () {}),
-                    IconButton(
-                      icon: _state
-                          ? Image.asset(
-                              "images/bookmark_white.png",
-                              height: 25,
-                              width: 25,
-                            )
-                          : Image.asset(
-                              "images/bookmark_white_green.png",
-                              height: 25,
-                              width: 25,
-                            ),
-                      tooltip: 'Show Snackbar',
-                      onPressed: () {
-                        setState(() => (_state = !_state));
-                        ScaffoldMessenger.of(context).showSnackBar(_state
-                            ? (const SnackBar(
-                                content: Text('removed from watchlist')))
-                            : (const SnackBar(
-                                content: Text('added to watchlist'))));
-                      },
-                    ),
+                    WatchlistButton()
                   ],
                 ),
               ),

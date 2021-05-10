@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
 import 'package:flutter_app/models/stock.dart';
+import 'package:flutter_app/Screens/screens.dart';
 
 class WatchlistScreen extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class WatchlistScreen extends StatefulWidget {
 class _WatchlistScreenState extends State<WatchlistScreen> {
   String _toptext = 'Watchlist';
   var _list = Stock.getWatchlist();
+  bool Searchmode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +41,11 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                       child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 15.0),
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               hintText: 'Search',
-                              prefix: Icon(Icons.search,
-                                  color: Colors.grey[400], size: 20),
+                              prefixIcon: Icon(Icons.search,
+                                  color: Colors.grey[400], size: 25),
                               fillColor: Colors.grey[900],
                               filled: true,
                               border: OutlineInputBorder(

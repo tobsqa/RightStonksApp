@@ -9,6 +9,7 @@ class StockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return StatefulBuilder(
         builder: (context, StateSetter setState) => ListView.separated(
             physics: const NeverScrollableScrollPhysics(),

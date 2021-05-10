@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Widgets/search_stock_widget.dart';
+import 'package:flutter_app/models/stock.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_app/Widgets/widgets.dart';
+import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
+import 'package:flutter_app/Widgets/search_stock_widget.dart';
 
-class Searchbar extends StatelessWidget {
+class Searchbar extends StatefulWidget {
+  @override
+  _SearchbarState createState() => _SearchbarState();
+}
+
+class _SearchbarState extends State<Searchbar> {
+  final TextFieldController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    TextFieldController.addListener(() => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -8,7 +27,7 @@ class Searchbar extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       home: DefaultTabController(
-        length: choices.length,
+        length: 3,
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.black,
@@ -25,11 +44,21 @@ class Searchbar extends StatelessWidget {
                         height: 45,
                         width: 300,
                         child: TextField(
+                            controller: TextFieldController,
+                            style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15.0),
                                 hintStyle: TextStyle(color: Colors.grey[400]),
                                 hintText: 'Search',
-                                prefix: Icon(Icons.search,
-                                    color: Colors.grey[400], size: 20),
+                                prefixIcon: Icon(Icons.search,
+                                    color: Colors.grey[400], size: 25),
+                                suffixIcon: TextFieldController.text.isEmpty
+                                    ? Container(width: 0)
+                                    : IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () =>
+                                            TextFieldController.clear(),
+                                        color: Colors.grey[400]),
                                 fillColor: Colors.grey[900],
                                 filled: true,
                                 border: OutlineInputBorder(
@@ -43,23 +72,34 @@ class Searchbar extends StatelessWidget {
                 unselectedLabelColor: Colors.grey[400],
                 tabs: [
                   Tab(icon: Text('All')),
-                  Tab(icon: Text('Recent')),
+                  Tab(icon: Text('History')),
                   Tab(icon: Text('Popular')),
-                  Tab(icon: Text('Cryptos')),
                 ],
               ),
             ),
             body: Container(
               color: Colors.black,
               child: TabBarView(
-                children: choices.map((Choice choice) {
-                  return Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ChoicePage(
-                      choice: choice,
-                    ),
-                  );
-                }).toList(),
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: DividerWithText(
+                            dividerText: 'Stocks',
+                          )),
+                      RecommendedList(),
+                      DividerWithText(
+                        dividerText: 'Crypto',
+                      ),
+                      DividerWithText(
+                        dividerText: 'Assets',
+                      )
+                    ],
+                  ),
+                  RecommendedList(),
+                  Icon(Icons.directions_bike),
+                ],
               ),
             )),
       ),
@@ -71,7 +111,7 @@ class Searchbar extends StatelessWidget {
         margin: EdgeInsets.only(right: 15),
         child: Material(
             borderRadius: BorderRadius.circular(18),
-            color: Colors.grey[900],
+            color: Colors.green,
             child: InkWell(
               borderRadius: BorderRadius.circular(18),
               child: Container(
@@ -83,47 +123,14 @@ class Searchbar extends StatelessWidget {
               onTap: () {},
             )));
   }
-}
 
-class Choice {
-  final String title;
-  final IconData icon;
-  const Choice({this.title, this.icon});
-}
-
-const List<Choice> choices = <Choice>[
-  Choice(title: 'CAR', icon: Icons.directions_car),
-  Choice(title: 'BICYCLE', icon: Icons.directions_bike),
-  Choice(title: 'BUS', icon: Icons.directions_bus),
-  Choice(title: 'BUS', icon: Icons.directions_bus),
-];
-
-class ChoicePage extends StatelessWidget {
-  const ChoicePage({Key key, this.choice}) : super(key: key);
-  final Choice choice;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextStyle textStyle = Theme.of(context).textTheme.display1;
-    return Card(
-      color: Colors.grey[900],
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              choice.icon,
-              size: 150.0,
-              color: textStyle.color,
-            ),
-            Text(
-              choice.title,
-              style: textStyle,
-            ),
-          ],
-        ),
+  Widget RecommendedList() {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 15,
       ),
+      height: MediaQuery.of(context).size.height,
+      child: Suggestions(stocks: Stock.getSuggestions()),
     );
   }
 }
