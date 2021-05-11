@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
+import 'package:flutter_app/Widgets/widgets.dart';
 import 'package:flutter_app/models/stock.dart';
 import 'package:flutter_app/Screens/screens.dart';
 
@@ -13,11 +13,12 @@ class WatchlistScreen extends StatefulWidget {
 class _WatchlistScreenState extends State<WatchlistScreen> {
   String _toptext = 'Watchlist';
   var _list = Stock.getWatchlist();
+  bool _search = false;
   bool Searchmode = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return _search ? Searchbar() : Container(
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
         child: SafeArea(
@@ -38,21 +39,28 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                   child: SizedBox(
                       height: 45,
-                      child: TextField(
-                          enabled: false,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 15.0),
-                              hintStyle: TextStyle(color: Colors.grey[400]),
-                              hintText: 'Search',
-                              prefixIcon: Icon(Icons.search,
-                                  color: Colors.grey[400], size: 25),
-                              fillColor: Colors.grey[900],
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      width: 0, style: BorderStyle.none),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(16))))))),
+                      child: InkWell(
+                        child: TextField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(left: 15.0),
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+                                hintText: 'Search',
+                                prefixIcon: Icon(Icons.search,
+                                    color: Colors.grey[400], size: 25),
+                                fillColor: Colors.grey[900],
+                                filled: true,
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 0, style: BorderStyle.none),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(16))))),
+                        onTap: () {
+                          setState(() {
+                           _search = true;
+                          });
+                        },
+                      ))),
               Container(
                   height: 75,
                   margin: EdgeInsets.only(top: 20, left: 16),

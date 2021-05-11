@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Screens/screens.dart';
 import 'package:flutter_app/Widgets/search_stock_widget.dart';
 import 'package:flutter_app/models/stock.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class Searchbar extends StatefulWidget {
 
 class _SearchbarState extends State<Searchbar> {
   final TextFieldController = TextEditingController();
-
+  bool Watchlist = false;
   void initState() {
     super.initState();
     TextFieldController.addListener(() => setState(() {}));
@@ -22,16 +23,16 @@ class _SearchbarState extends State<Searchbar> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Watchlist? WatchlistScreen() : MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
       home: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.black,
-              elevation: 0,
+              elevation: 100,
               title: Padding(
                   padding: const EdgeInsets.only(bottom: 5),
                   child: Row(children: <Widget>[
@@ -73,7 +74,6 @@ class _SearchbarState extends State<Searchbar> {
                 tabs: [
                   Tab(icon: Text('All')),
                   Tab(icon: Text('History')),
-                  Tab(icon: Text('Popular')),
                 ],
               ),
             ),
@@ -81,24 +81,41 @@ class _SearchbarState extends State<Searchbar> {
               color: Colors.black,
               child: TabBarView(
                 children: [
-                  Column(
+                  ListView(
                     children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: DividerWithText(
-                            dividerText: 'Stocks',
-                          )),
-                      RecommendedList(),
-                      DividerWithText(
-                        dividerText: 'Crypto',
+                      Column(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: DividerWithText(
+                                dividerText: 'Popular Stocks',
+                              )),
+                          RecommendedList(),
+                        ],
                       ),
-                      DividerWithText(
-                        dividerText: 'Assets',
-                      )
+                      Column(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: DividerWithText(
+                                dividerText: 'Popular Crypto',
+                              )),
+                          RecommendedList(),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: DividerWithText(
+                                dividerText: 'Popular Assets',
+                              )),
+                          RecommendedList(),
+                        ],
+                      ),
                     ],
                   ),
                   RecommendedList(),
-                  Icon(Icons.directions_bike),
                 ],
               ),
             )),
@@ -120,17 +137,21 @@ class _SearchbarState extends State<Searchbar> {
                 width: 40,
                 child: Image.asset('images/arrow.png'),
               ),
-              onTap: () {},
+                onTap: () {
+                  setState(() {
+                    Watchlist = true;
+                  });
+                },
             )));
   }
 
   Widget RecommendedList() {
     return Container(
       margin: EdgeInsets.only(
-        top: 15,
+        top: 8,
       ),
-      height: MediaQuery.of(context).size.height,
-      child: Suggestions(stocks: Stock.getSuggestions()),
+      height: 185,
+      child: Suggestions(stocks: Stock.getSuggestionStocks()),
     );
   }
 }
