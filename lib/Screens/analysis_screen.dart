@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/Screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Widgets/add_to_watchlist_button.dart';
+import 'package:flutter_app/DataProvider/IEX_CLOUD/IEX_Interday.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override
@@ -20,6 +22,10 @@ class Stockscreen extends State<AnalysisScreen> {
 
 class TopBar extends StatelessWidget {
   bool _state = true;
+  void info() async {
+    List lol = await IEXAPIService().IEX_Interday("tsla", "high");
+    print(lol);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +45,28 @@ class TopBar extends StatelessWidget {
                         icon: Icon(Icons.arrow_back_ios_rounded),
                         color: Colors.green,
                         onPressed: () {}),
-                    WatchlistButton()
+                    IconButton(
+                      icon: _state
+                          ? Image.asset(
+                              "images/bookmark_white.png",
+                              height: 25,
+                              width: 25,
+                            )
+                          : Image.asset(
+                              "images/bookmark_white_green.png",
+                              height: 25,
+                              width: 25,
+                            ),
+                      tooltip: 'Show Snackbar',
+                      onPressed: () {
+                        setState(() => (_state = !_state));
+                        ScaffoldMessenger.of(context).showSnackBar(_state
+                            ? (const SnackBar(
+                                content: Text('removed from watchlist')))
+                            : (const SnackBar(
+                                content: Text('added to watchlist'))));
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -76,30 +103,36 @@ class TopBar extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top:15, bottom: 15),
+                          margin: EdgeInsets.only(top: 15, bottom: 15),
                           child: SizedBox(
                               width: 80,
                               height: 35,
                               child: InkWell(
-                                  child: Container(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.green),
-                                      child: Text("lol",
-                                          style:
-                                              TextStyle(color: Colors.white))),
-                                  onTap: () => setState(
-                                        () => (print("lol")),
-                                      ))),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.green),
+                                    child: Text("lol",
+                                        style: TextStyle(color: Colors.white))),
+                                onTap: () => info(),
+                              )),
                         ),
                       ],
                     ),
                     Container(
-                      height: 195,
-                      color: Colors.green,
-
+                        height: 250,
+                        child: SfCartesianChart(
+                          primaryXAxis: CategoryAxis(),
+                          primaryYAxis: NumericAxis(),
+                          series: <ChartSeries>[
+                            ColumnSeries<SalesData, String>(
+                              dataSource: getColumnData(),
+                              xValueMapper: (SalesData sales,_)=>sales.x,
+                              yValueMapper: (SalesData sales,_)=>sales.y
+                            )
+                          ]
+                        ),
                     ),
                   ],
                 ),
@@ -110,4 +143,19 @@ class TopBar extends StatelessWidget {
       ),
     );
   }
+}
+
+class SalesData{
+  String x;
+  double y;
+  SalesData(this.x, this.y);
+}
+
+dynamic getColumnData(){
+  List<SalesData> columnData = <SalesData>[
+    SalesData("BMW", 20),
+    SalesData("Audi", 10),
+    SalesData("VW", 30),
+  ];
+  return columnData;
 }

@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/analysis_screen.dart';
 import 'package:flutter_app/Screens/screens.dart';
+
+
 
 class BottomNavScreen extends StatefulWidget {
   @override

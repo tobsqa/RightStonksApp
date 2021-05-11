@@ -9,7 +9,11 @@ class DiscussScreen extends StatelessWidget {
       color: Colors.black87,
       child: Column(children: <Widget> [
         Text('Discussion')
-      ],),
+
+      ],
+
+      ),
+
     );
   }
 }
