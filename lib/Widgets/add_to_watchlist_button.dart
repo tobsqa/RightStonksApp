@@ -31,9 +31,11 @@ class _WatchlistButtonState extends State<WatchlistButton> {
         setState(() => (_state = !_state));
         ScaffoldMessenger.of(context).showSnackBar(_state
             ? (const SnackBar(
-            content: Text('removed from watchlist')))
+            duration: Duration(seconds: 1),
+            content: Text('Removed from your watchlist')))
             : (const SnackBar(
-            content: Text('added to watchlist'))));
+            duration: Duration(seconds: 1),
+            content: Text('Added to your watchlist'))));
       },
     );
   }

@@ -86,9 +86,9 @@ class Stock {
   static List<Stock> getSuggestionCrypto() {
 
     List<Stock> sugcryptos = List<Stock>();
-    sugcryptos.add(Stock(company: "Bitcoin",symbol: "GME", price: 90000, percent: '+ 682%', money: "+ 5.02€"));
+    sugcryptos.add(Stock(company: "Bitcoin",symbol: "BTC", price: 90000, percent: '+ 682%', money: "+ 5.02€"));
     sugcryptos.add(Stock(company: "Ethereum",symbol: "ETH", price: 800, percent: '+ 2.02%', money: "+ 7.02€"));
-    sugcryptos.add(Stock(company: "XRP Ripple",symbol: "XRP", price: 56.00, percent: '+ 1.02%', money: "+ 3.02€"));
+    sugcryptos.add(Stock(company: "Dogecoin",symbol: "DOGE", price: 56.00, percent: '+ 1.02%', money: "+ 3.02€"));
 
     return sugcryptos;
 
@@ -97,9 +97,9 @@ class Stock {
   static List<Stock> getSuggestionAssets() {
 
     List<Stock> sugassets = List<Stock>();
-    sugassets.add(Stock(company: "Bitcoin",symbol: "GME", price: 90000, percent: '+ 682%', money: "+ 5.02€"));
-    sugassets.add(Stock(company: "Ethereum",symbol: "ETH", price: 800, percent: '+ 2.02%', money: "+ 7.02€"));
-    sugassets.add(Stock(company: "XRP Ripple",symbol: "XRP", price: 56.00, percent: '+ 1.02%', money: "+ 3.02€"));
+    sugassets.add(Stock(company: "HouseMarket",symbol: "HM", price: 90000, percent: '+ 682%', money: "+ 5.02€"));
+    sugassets.add(Stock(company: "Gold",symbol: "GLD", price: 800, percent: '+ 2.02%', money: "+ 7.02€"));
+    sugassets.add(Stock(company: "Silver",symbol: "SILV", price: 56.00, percent: '+ 1.02%', money: "+ 3.02€"));
 
     return sugassets;
 

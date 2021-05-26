@@ -27,6 +27,11 @@ dependencies:
   flutter:
     sdk: flutter
   syncfusion_flutter_charts: ^19.1.59
+  flappy_search_bar_fork: ^1.7.4
+  firebase_auth: ^1.2.0
+  cloud_firestore: ^2.2.0
+  firebase_core : ^1.2.0
+  provider: ^5.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -60,6 +65,9 @@ flutter:
     - images/bookmark_white.png
     - images/bookmark_white_green.png
     - images/arrow.png
+    - images/locksmith.png
+    - images/deal.png
+    - images/add-user.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "668744741587",
+    "project_id": "stonksapp-7c2ad",
+    "storage_bucket": "stonksapp-7c2ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668744741587:android:4e4126c2dbf48d3ec69a26",
+        "android_client_info": {
+          "package_name": "com.stonks.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668744741587-rn5kepj7d0e8eql2abs8ac6b9l2k95t0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXeNEYaZp-8did-uEi3KNUDgos3DgaVRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668744741587-rn5kepj7d0e8eql2abs8ac6b9l2k95t0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

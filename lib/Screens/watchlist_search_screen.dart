@@ -100,7 +100,7 @@ class _SearchbarState extends State<Searchbar> {
                               child: DividerWithText(
                                 dividerText: 'Popular Crypto',
                               )),
-                          RecommendedList(),
+                          RecommendedCrypto(),
                         ],
                       ),
                       Column(
@@ -110,7 +110,7 @@ class _SearchbarState extends State<Searchbar> {
                               child: DividerWithText(
                                 dividerText: 'Popular Assets',
                               )),
-                          RecommendedList(),
+                          RecommendedAssets(),
                         ],
                       ),
                     ],
@@ -152,6 +152,26 @@ class _SearchbarState extends State<Searchbar> {
       ),
       height: 185,
       child: Suggestions(stocks: Stock.getSuggestionStocks()),
+    );
+  }
+
+  Widget RecommendedCrypto() {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 8,
+      ),
+      height: 185,
+      child: Suggestions(stocks: Stock.getSuggestionCrypto()),
+    );
+  }
+
+  Widget RecommendedAssets() {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 8,
+      ),
+      height: 185,
+      child: Suggestions(stocks: Stock.getSuggestionAssets()),
     );
   }
 }

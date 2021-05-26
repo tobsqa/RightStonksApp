@@ -26,18 +26,18 @@ class Suggestions extends StatelessWidget {
                           child: Container(
                               padding: const EdgeInsets.only(left: 12, right: 12),
                               child: ListTile(
-                                leading: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.all(Radius.circular(14.0)),
+                                  leading: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                    ),
+                                    constraints: BoxConstraints.expand(
+                                      height: 40.0,
+                                      width: 40.0,
+                                    ),
+                                    child: ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.network('https://storage.googleapis.com/iex/api/logos/$tickerimage.png',)),
                                   ),
-                                  constraints: BoxConstraints.expand(
-                                    height: 40.0,
-                                    width: 40.0,
-                                  ),
-                                  child: ClipRRect(borderRadius: BorderRadius.circular(14), child: Image.network('https://storage.googleapis.com/iex/api/logos/$tickerimage.png',)),
-                                ),
-                                contentPadding: EdgeInsets.all(3),
+                                  contentPadding: EdgeInsets.all(3),
                                   title: Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
