@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Screens/Authenticate/signup.dart';
+import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
 import 'package:flutter_app/models/authservice.dart';
 
 class SignIn extends StatefulWidget {
@@ -12,10 +14,8 @@ class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
 
   //textfieldstate
-  String username = '';
   String email = '';
   String password = '';
-  String confirmpassword = '';
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,7 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.grey[900],
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GetStartedScreen()));
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -115,13 +115,18 @@ class _SignInState extends State<SignIn> {
                         style: TextStyle(
                           color: Colors.grey[400],
                         )),
-                    Text(
-                      " Sign up",
-                      style: TextStyle(
-                        color: Colors.blue[400],
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
+                    TextButton(
+                      child: Text(
+                        "Sign up",
+                        style: TextStyle(
+                          color: Colors.blue[400],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
                       ),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupPage()));
+                      },
                     )
                   ],
                 ),
@@ -176,6 +181,7 @@ class _SignInState extends State<SignIn> {
       ],
     );
   }
+
   Widget inputFilePassword({label, obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
