@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/Authenticate/login.dart';
+import 'package:flutter_app/Screens/Authenticate/signup.dart';
 import 'package:flutter_app/Screens/Authenticate/test.dart';
 import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
 
@@ -11,10 +12,23 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
+
+  bool showSignIn = true;
+
+  void toggleView() {
+    setState(() {
+      showSignIn = !showSignIn;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GetStartedScreen(),
-    );
+    if (showSignIn) {
+      return SignIn(toggleView: toggleView);
+    }
+    else {
+      return SignupPage(toggleView: toggleView);
+    }
   }
 }

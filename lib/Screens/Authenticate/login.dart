@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Screens/Authenticate/signup.dart';
 import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
 import 'package:flutter_app/models/authservice.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({Key key}) : super(key: key);
+  final Function toggleView;
+  SignIn({this.toggleView});
 
   @override
   _SignInState createState() => _SignInState();
@@ -12,10 +12,12 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   //textfieldstate
   String email = '';
   String password = '';
+  String error = '';
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +29,8 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.grey[900],
         leading: IconButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => GetStartedScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => GetStartedScreen()));
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -56,7 +59,7 @@ class _SignInState extends State<SignIn> {
                           color: Colors.white),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Text(
                       "Login to your account",
@@ -64,15 +67,12 @@ class _SignInState extends State<SignIn> {
                     )
                   ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
-                  child: Column(
-                    children: <Widget>[
-                      inputFileEmail(label: "Email"),
-                      inputFilePassword(label: "Password", obscureText: true)
-                    ],
-                  ),
+                SizedBox(
+                  height: 10,
                 ),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: inputFile()),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
@@ -89,8 +89,15 @@ class _SignInState extends State<SignIn> {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () async {
-                        print(email);
-                        print(password);
+                        if (_formKey.currentState.validate()) {
+                          print('valid');
+                          dynamic result = await _auth.SignInWithEmailAndPassword(email, password);
+                          if (result == null) {
+                            setState(() {
+                              error = 'Could not sign in with those credentials';
+                            });
+                          }
+                        }
                       },
                       color: Color(0xff62dc94),
                       elevation: 0,
@@ -125,7 +132,7 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupPage()));
+                        widget.toggleView();
                       },
                     )
                   ],
@@ -148,71 +155,81 @@ class _SignInState extends State<SignIn> {
   }
 
 // we will be creating a widget for text field
-  Widget inputFileEmail({label, obscureText = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        TextField(
-          onChanged: (val) {
-            setState(() {
-              email = val;
-            });
-          },
-          obscureText: obscureText,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400]),
-              ),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[400]))),
-        ),
-        SizedBox(
-          height: 10,
-        )
-      ],
-    );
-  }
-
-  Widget inputFilePassword({label, obscureText = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        TextField(
-          onChanged: (val) {
-            setState(() {
-              password = val;
-            });
-          },
-          obscureText: obscureText,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400]),
-              ),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[400]))),
-        ),
-        SizedBox(
-          height: 10,
-        )
-      ],
+  Widget inputFile() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Email or Username',
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          TextFormField(
+            style: TextStyle(color: Colors.white),
+            validator: (val) =>
+                val.isEmpty ? 'Please enter a valid email address' : null,
+            onChanged: (val) {
+              setState(() {
+                email = val;
+              });
+            },
+            obscureText: false,
+            decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[400]),
+                ),
+                border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[400]))),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            'Password',
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          TextFormField(
+            style: TextStyle(color: Colors.white),
+            validator: (val) {
+              if (val.isEmpty) {
+                return "Please enter password";
+              } else if (val.length < 6) {
+                return "Password must be at least 6 characters long";
+              } else {
+                return null;
+              }
+            },
+            onChanged: (val) {
+              setState(() {
+                password = val;
+              });
+            },
+            obscureText: true,
+            decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[400]),
+                ),
+                border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[400]))),
+          ),
+          SizedBox(
+            height: 10,
+          )
+        ],
+      ),
     );
   }
 }

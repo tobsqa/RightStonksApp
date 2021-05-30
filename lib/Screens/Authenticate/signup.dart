@@ -4,6 +4,10 @@ import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
 import 'package:flutter_app/models/authservice.dart';
 
 class SignupPage extends StatefulWidget {
+
+  final Function toggleView;
+  SignupPage({this.toggleView});
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -126,8 +130,7 @@ class _SignupPageState extends State<SignupPage> {
                           fontSize: 18,
                         )),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SignIn()));
+                      widget.toggleView();
                     },
                   )
                 ],
@@ -155,6 +158,7 @@ class _SignupPageState extends State<SignupPage> {
             height: 5,
           ),
           TextFormField(
+            style: TextStyle(color: Colors.white),
             validator: (val) => val.isEmpty ? 'Please enter username' : null,
             onChanged: (val) {
               setState(() {
@@ -183,6 +187,7 @@ class _SignupPageState extends State<SignupPage> {
             height: 5,
           ),
           TextFormField(
+            style: TextStyle(color: Colors.white),
             validator: (val) =>
                 val.isEmpty ? 'Please enter a valid email address' : null,
             onChanged: (val) {
@@ -212,11 +217,12 @@ class _SignupPageState extends State<SignupPage> {
             height: 5,
           ),
           TextFormField(
+            style: TextStyle(color: Colors.white),
             validator: (val) {
               if (val.isEmpty) {
                 return "Please enter password";
               } else if (val.length < 6) {
-                return "Password must be atleast 6 characters long";
+                return "Password must be at least 6 characters long";
               } else {
                 return null;
               }
@@ -248,6 +254,7 @@ class _SignupPageState extends State<SignupPage> {
             height: 5,
           ),
           TextFormField(
+            style: TextStyle(color: Colors.white),
             validator: (val) {
               if (val.isEmpty) {
                 return "Please re-enter new password";
