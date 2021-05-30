@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
+import 'package:flutter_app/Widgets/loading.dart';
 import 'package:flutter_app/models/authservice.dart';
 
 class SignIn extends StatefulWidget {
@@ -13,6 +14,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   //textfieldstate
   String email = '';
@@ -20,7 +22,7 @@ class _SignInState extends State<SignIn> {
   String error = '';
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -90,11 +92,14 @@ class _SignInState extends State<SignIn> {
                       height: 60,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          print('valid');
+                          setState(() {
+                            loading = true;
+                          });
                           dynamic result = await _auth.SignInWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
                               error = 'Could not sign in with those credentials';
+                              loading = false;
                             });
                           }
                         }

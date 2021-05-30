@@ -131,18 +131,6 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                      child: Text('Anonymtest'),
-                      onPressed: () async {
-                        dynamic result = await _auth.signInAnon();
-                        if (result == null) {
-                          print ('Error signing in');
-                        } else {
-                          print ('Signed in');
-                          print(result.uid);
-                        }
-                      }),
-
                 ],
               )
 

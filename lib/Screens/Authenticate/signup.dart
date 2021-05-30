@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/Authenticate/login.dart';
 import 'package:flutter_app/Screens/Authenticate/startscreen.dart';
+import 'package:flutter_app/Widgets/loading.dart';
 import 'package:flutter_app/models/authservice.dart';
 
 class SignupPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   //textfieldstate
   String username = '';
@@ -25,7 +27,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -91,11 +93,15 @@ class _SignupPageState extends State<SignupPage> {
                   height: 60,
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
+                      setState(() {
+                        loading = true;
+                      });
                       dynamic result = await _auth.registerWithEmailAndPassword(
                           email, password);
                       if (result == null) {
                         setState(() {
                           error = 'An Error occurred';
+                          loading = false;
                         });
                       }
                     }
