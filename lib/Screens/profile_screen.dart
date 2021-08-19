@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
-class NewsScreen extends StatelessWidget {
+class Profilescreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
       width: MediaQuery.of(context).size.width,
-      color: Colors.black87,
+      color: Colors.white,
       child: Column(children: <Widget> [
-        Text('NEWS')
-      ],),
+        Text('Discussion')
+
+      ],
+
+      ),
+
     );
   }
 }
