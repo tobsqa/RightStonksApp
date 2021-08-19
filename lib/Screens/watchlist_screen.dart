@@ -5,16 +5,25 @@ import 'package:flutter_app/Widgets/widgets.dart';
 import 'package:flutter_app/models/stock.dart';
 import 'package:flutter_app/Screens/screens.dart';
 
+import 'package:flutter_app/Cloudservices/http_service.dart';
+import 'package:flutter_app/models/stock.dart';
+import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
+import 'package:intl/intl.dart';
+
 class WatchlistScreen extends StatefulWidget {
+  final title;
+  WatchlistScreen({this.title});
+
   @override
   _WatchlistScreenState createState() => _WatchlistScreenState();
 }
 
 class _WatchlistScreenState extends State<WatchlistScreen> {
   String _toptext = 'Watchlist';
-  var _list = Stock.getWatchlist();
+  // var _list = Stock.getWatchlist();
   bool _search = false;
   bool Searchmode = false;
+  HttpService httpService = HttpService();
 
   @override
   Widget build(BuildContext context) {
@@ -68,24 +77,21 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       ScreenCategorys('images/bookmark.png', 'Watchlist',
-                          'Watchlist', Stock.getWatchlist()),
+                          'Watchlist'),
                       ScreenCategorys('images/gorilla.png', 'WSB',
-                          'WallStreetBets', Stock.getWSB()),
-                      ScreenCategorys('images/fire.png', 'Hot', 'Hot Stocks',
-                          Stock.getHot()),
-                      ScreenCategorys('images/money.png', 'Indices', 'Indieces',
-                          Stock.getIndieces()),
-                      ScreenCategorys('images/bitcoin.png', 'Crypto', 'Crypto',
-                          Stock.getCrypto()),
+                          'WallStreetBets'),
+                      ScreenCategorys('images/fire.png', 'Hot', 'Hot Stocks',),
+                      ScreenCategorys('images/money.png', 'Indices', 'Indieces',),
+                      ScreenCategorys('images/bitcoin.png', 'Crypto', 'Crypto',),
                     ],
                   )),
-              Container(child: List())
+              CurrentList()
             ],
           ),
         ));
   }
 
-  Widget ScreenCategorys(String image, String name, String mytoptext, mylist) {
+  Widget ScreenCategorys(String image, String name, String mytoptext) {
     return Container(
         margin: EdgeInsets.only(right: 15),
         width: 75,
@@ -121,18 +127,37 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
           onTap: () {
             setState(() {
               _toptext = mytoptext;
-              _list = mylist;
+              // _list = mylist;
             });
           },
         )));
   }
 
 //Widget for diffrent Lists
-  Widget List() {
-    return Container(
-      margin: EdgeInsets.only(top: 15,),
-      height: MediaQuery.of(context).size.height,
-      child: StockList(stocks: _list),
+// was mylist before to work with swiching the diffrent categorys
+
+  Widget CurrentList() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: FutureBuilder(
+        future: httpService.getStocks(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Stock>> stockdata) {
+          if (stockdata.hasData) {
+            List<Stock> stocks = stockdata.data;
+            return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: StockList(
+                  stocks: stocks,
+                ));
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+        },
+      ),
     );
   }
 }

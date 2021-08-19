@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/stock.dart';
-import 'package:flutter_app/Widgets/percent_or_money_widget.dart';
 
 class StockList extends StatelessWidget {
   final List<Stock> stocks;
@@ -14,7 +13,7 @@ class StockList extends StatelessWidget {
         builder: (context, StateSetter setState) => ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) {
-              return Divider(color: Colors.grey[400]);
+              return Divider(color: Colors.grey[400], height: 10,);
             },
             itemCount: this.stocks.length,
             itemBuilder: (context, index) {
@@ -48,7 +47,7 @@ class StockList extends StatelessWidget {
                                       width: 80,
                                       height: 35,
                                       child: Material(
-                                          color: stock.money.contains("-")
+                                          color: stock.chg.contains("-")
                                               ? (Colors.red)
                                               : (Colors.green),
                                           borderRadius:
@@ -60,8 +59,8 @@ class StockList extends StatelessWidget {
                                                   alignment: Alignment.center,
                                                   child: Text(
                                                       _percent
-                                                          ? (stock.percent)
-                                                          : (stock.money),
+                                                          ? (stock.chg)
+                                                          : (stock.price),
                                                       style: TextStyle(
                                                           color:
                                                               Colors.white))),

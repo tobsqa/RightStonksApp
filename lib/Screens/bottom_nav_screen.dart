@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/analysis_screen.dart';
 import 'package:flutter_app/Screens/screens.dart';
+import 'upload_text.dart';
 
 
 
@@ -14,10 +14,10 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   final List _screens = [
     HomeScreen(),
+    NewsScreen(),
     AnalysisScreen(),
     WatchlistScreen(),
-    NewsScreen(),
-    DiscussScreen(),
+    ProfilePage(),
   ];
   int _currentIndex = 0;
 
@@ -35,7 +35,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         elevation: 0.0,
-        items: [Icons.home, Icons.insert_chart, Icons.panorama_fish_eye, Icons.event_note, Icons.chat]
+        items: [Icons.home, Icons.bubble_chart, Icons.add_circle, Icons.insert_chart, Icons.person]
             .asMap()
             .map((key, value) => MapEntry(
           key,
@@ -48,7 +48,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               ),
               decoration: BoxDecoration(
                 color: _currentIndex == key
-                    ? Colors.green[600]
+                    ? Colors.blue.shade300
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(20.0),
               ),

@@ -1,18 +1,18 @@
-import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/authservice.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/Cloudservices/database.dart';
 import 'package:flutter_app/Widgets/homescreenwidgets.dart';
+import 'package:flutter_app/models/userdatamodel.dart';
 
 class HomeScreen extends StatelessWidget {
   final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
-      value: DatabaseService().userdata,
+    return StreamProvider<List<Userdata>>.value(
+      value: DatabaseService().myuserdata,
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(

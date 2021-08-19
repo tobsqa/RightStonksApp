@@ -23,7 +23,7 @@ class _SearchbarState extends State<Searchbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Watchlist? WatchlistScreen() : MaterialApp(
+    return Watchlist? SettingsScreen() : MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
@@ -90,7 +90,7 @@ class _SearchbarState extends State<Searchbar> {
                               child: DividerWithText(
                                 dividerText: 'Popular Stocks',
                               )),
-                          RecommendedList(),
+                          //RecommendedList(),
                         ],
                       ),
                       Column(
@@ -100,7 +100,7 @@ class _SearchbarState extends State<Searchbar> {
                               child: DividerWithText(
                                 dividerText: 'Popular Crypto',
                               )),
-                          RecommendedCrypto(),
+                          //RecommendedCrypto(),
                         ],
                       ),
                       Column(
@@ -110,12 +110,12 @@ class _SearchbarState extends State<Searchbar> {
                               child: DividerWithText(
                                 dividerText: 'Popular Assets',
                               )),
-                          RecommendedAssets(),
+                          //RecommendedAssets(),
                         ],
                       ),
                     ],
                   ),
-                  RecommendedList(),
+                  //RecommendedList(),
                 ],
               ),
             )),
@@ -145,33 +145,33 @@ class _SearchbarState extends State<Searchbar> {
             )));
   }
 
-  Widget RecommendedList() {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 8,
-      ),
-      height: 185,
-      child: Suggestions(stocks: Stock.getSuggestionStocks()),
-    );
-  }
-
-  Widget RecommendedCrypto() {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 8,
-      ),
-      height: 185,
-      child: Suggestions(stocks: Stock.getSuggestionCrypto()),
-    );
-  }
-
-  Widget RecommendedAssets() {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 8,
-      ),
-      height: 185,
-      child: Suggestions(stocks: Stock.getSuggestionAssets()),
-    );
-  }
+  // Widget RecommendedList() {
+  //   return Container(
+  //     margin: EdgeInsets.only(
+  //       top: 8,
+  //     ),
+  //     height: 185,
+  //     child: Suggestions(stocks: Stock.getSuggestionStocks()),
+  //   );
+  // }
+  //
+  // Widget RecommendedCrypto() {
+  //   return Container(
+  //     margin: EdgeInsets.only(
+  //       top: 8,
+  //     ),
+  //     height: 185,
+  //     child: Suggestions(stocks: Stock.getSuggestionCrypto()),
+  //   );
+  // }
+  //
+  // Widget RecommendedAssets() {
+  //   return Container(
+  //     margin: EdgeInsets.only(
+  //       top: 8,
+  //     ),
+  //     height: 185,
+  //     child: Suggestions(stocks: Stock.getSuggestionAssets()),
+  //   );
+  // }
 }

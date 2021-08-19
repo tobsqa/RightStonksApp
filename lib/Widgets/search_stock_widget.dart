@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Widgets/add_to_watchlist_button.dart';
 import 'package:flutter_app/models/stock.dart';
-import 'package:flutter_app/Widgets/percent_or_money_widget.dart';
 
 class Suggestions extends StatelessWidget {
   final List<Stock> stocks;

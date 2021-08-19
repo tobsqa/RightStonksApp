@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_app/models/userdatamodel.dart';
 
 class DatabaseService {
 
@@ -19,7 +20,19 @@ class DatabaseService {
     });
   }
 
-  Stream <QuerySnapshot> get userdata {
-    return stockCollection.snapshots();
+  //userdata list from snapshot
+  List<Userdata> _userdataFromSnapshot(QuerySnapshot snapshot){
+    return snapshot.docs.map((doc){
+      return Userdata(
+        username: doc.get('username') ?? " ",
+        nametag: doc.get('nametag') ?? " ",
+        otherdata: doc.get('otherdata') ?? " ",
+      );
+    });
+  }
+
+  Stream <List<Userdata>> get myuserdata {
+    return stockCollection.snapshots()
+        .map(_userdataFromSnapshot);
   }
 }
