@@ -22,11 +22,13 @@ environment:
 
 dependencies:
   stomp_dart_client: ^0.4.3
+#  webview_flutter: ^2.0.13
   like_button: ^2.0.2
   intl: ^0.17.0
   json_annotation: ^4.0.0
   snapshot: ^0.2.0
-  http:
+  cached_network_image: ^3.1.0
+  http: ^0.13.3
   flutter:
     sdk: flutter
   syncfusion_flutter_charts: ^19.1.59

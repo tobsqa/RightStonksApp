@@ -1,54 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/stocknews.dart';
+import 'package:flutter_app/models/stocknewsmodel.dart';
 import 'package:flutter_app/Screens/stock_news_screen.dart';
+import 'package:flutter_app/Screens/stock_newsweb_screen.dart';
 
-class ForYouContainer extends StatefulWidget {
-  final Article article;
+class NewsTile extends StatelessWidget {
+  final String imgUrl, title, desc, content, posturl, author, publishedAt;
 
-  const ForYouContainer({Key key, this.article}) : super(key: key);
-  @override
-  _ForYouContainerState createState() => _ForYouContainerState();
-}
+  NewsTile(
+      {this.imgUrl,
+      this.desc,
+      this.title,
+      this.publishedAt,
+      this.content,
+      this.author,
+      @required this.posturl});
 
-class _ForYouContainerState extends State<ForYouContainer> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ArticleScreen(
-              article: widget.article,
-            )));
+              // postUrl: posturl,
+                  imgUrl: imgUrl,
+                  author: author,
+                  publishedAt: publishedAt,
+                  content: content,
+                  desc: desc,
+                  title: title,
+                  posturl: posturl,
+                )));
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15),
+        padding: const EdgeInsets.only(left: 12.5, right: 12.5),
         child: Container(
           height: 100,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(vertical: 7.5),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.grey[900],),
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.grey[900],
+          ),
           child: Row(
             children: [
               Container(
                 width: 100,
+                height: 100,
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(8),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[700],
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(widget.article.image),
-                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.network(
+                          imgUrl ?? "N/A",
+                          fit: BoxFit.fitHeight,
+                        )),
                   ),
                 ),
               ),
@@ -59,44 +69,54 @@ class _ForYouContainerState extends State<ForYouContainer> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        widget.article.author,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 180,
+                            child: Text(
+                              posturl ?? "N/A",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            publishedAt.substring(0, 10) ?? "N/A",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                       Text(
-                        widget.article.title,
+                        title ?? "N/A",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.article.category,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Container(
+                        width: 250,
+                        child: Text(
+                          desc ?? "N/A",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
                           ),
-                          Text(
-                            widget.article.time,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

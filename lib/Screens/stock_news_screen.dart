@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/stocknews.dart';
+import 'package:flutter_app/models/stocknewsmodel.dart';
 import 'package:like_button/like_button.dart';
+import 'package:flutter_app/models/stocknews.dart';
 
 class ArticleScreen extends StatefulWidget {
-  final Article article;
+  final String imgUrl, title, desc, content, posturl, author, publishedAt;
 
-  const ArticleScreen({Key key, this.article}) : super(key: key);
+  ArticleScreen(
+      {this.imgUrl,
+      this.desc,
+      this.author,
+      this.title,
+      this.publishedAt,
+      this.content,
+      @required this.posturl});
+
   @override
   _ArticleScreenState createState() => _ArticleScreenState();
 }
@@ -23,32 +32,36 @@ class _ArticleScreenState extends State<ArticleScreen> {
                 Stack(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height / 4,
+                      height: 300,
                       decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(50),
-                          bottomRight: Radius.circular(50),
-                        ),
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage(widget.article.image),
-                        ),
-                      ),
+                          color: Colors.grey[900],
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                          )),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                          ),
+                          child: Image.network(
+                            widget.imgUrl ?? "N/A",
+                            fit: BoxFit.fitHeight,
+                          )),
                     ),
                     Positioned(
                       left: 10,
                       top: 10,
                       child: Icon(
                         Icons.arrow_back,
-                        size: 40,
+                        size: 30,
                         color: Colors.white,
                       ),
                     )
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -58,19 +71,25 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            widget.article.category,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Icon(Icons.web_rounded, color: Colors.blue, size: 12,),
+                              Padding(padding: EdgeInsets.symmetric(horizontal: 2.5)),
+                              Text(
+                                "Go to Website",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                           Text(
-                            widget.article.time,
+                            widget.publishedAt.substring(0, 10) ?? "N/A",
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 20,
+                              fontSize: 12,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -80,7 +99,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         height: 20,
                       ),
                       Text(
-                        widget.article.title,
+                        widget.title ?? "N/A",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -93,7 +112,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       Row(
                         children: [
                           Image.asset(
-                            widget.article.authorImg,
+                            widget.imgUrl ?? "N/A",
                             height: 30,
                           ),
                         ],
@@ -102,7 +121,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         height: 20,
                       ),
                       Text(
-                        widget.article.description,
+                        widget.content ?? "N/A",
                         style: TextStyle(
                           color: Colors.grey[400],
                           fontSize: 20,
@@ -115,112 +134,125 @@ class _ArticleScreenState extends State<ArticleScreen> {
               ],
             ),
             Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                  padding:
-                  EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                      color: Color(0xff191919),
-                      borderRadius: BorderRadius.all(Radius.circular(14))),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(Icons.mode_comment_outlined, color: Colors.grey, size: 30,),
-                            Padding(padding: EdgeInsets.only(left: 5,)),
-                            Text("102", style: TextStyle(
-                                color: Colors.grey
-                            ),)
-                          ],
-                        ),
-                        MyDivider3(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            LikeButton(
-                              size: 35,
-                              circleColor:
-                              CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                              bubblesColor: BubblesColor(
-                                dotPrimaryColor: Color(0xff33b5e5),
-                                dotSecondaryColor: Color(0xff0099cc),
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.all(Radius.circular(14))),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.mode_comment_outlined,
+                                color: Colors.grey,
+                                size: 30,
                               ),
-                              likeBuilder: (bool isLiked) {
-                                return Icon(Icons.live_help,
-                                  color: isLiked ? Colors.red : Colors.grey,
-                                  size: 35,
-                                );
-                              },
-                              likeCount: 669,
-                              countBuilder: (int count, bool isLiked, String text) {
-                                var color = isLiked ? Colors.red : Colors.grey;
-                                Widget result;
-                                if (count == 0) {
-                                  result = Text(
-                                    "0",
-                                    style: TextStyle(color: color),
-                                  );
-                                } else
-                                  result = Text(
-                                    text,
-                                    style: TextStyle(color: color),
-                                  );
-                                return result;
-                              },
-                            ),
-                          ],
-                        ),
-                        MyDivider3(),
-                        LikeButton(
-                          size: 35,
-                          circleColor:
-                          CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                          bubblesColor: BubblesColor(
-                            dotPrimaryColor: Color(0xff33b5e5),
-                            dotSecondaryColor: Color(0xff0099cc),
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                left: 5,
+                              )),
+                              Text(
+                                "102",
+                                style: TextStyle(color: Colors.grey),
+                              )
+                            ],
                           ),
-                          likeBuilder: (bool isLiked) {
-                            return Icon(
-                              Icons.favorite,
-                              color: isLiked ? Colors.green : Colors.grey,
-                              size: 35,
-                            );
-                          },
-                          likeCount: 302249,
-                          countBuilder: (int count, bool isLiked, String text) {
-                            var color = isLiked ? Colors.green : Colors.grey;
-                            Widget result;
-                            if (count == 0) {
-                              result = Text(
-                                "0",
-                                style: TextStyle(color: color),
+                          MyDivider3(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              LikeButton(
+                                size: 35,
+                                circleColor: CircleColor(
+                                    start: Color(0xff00ddff),
+                                    end: Color(0xff0099cc)),
+                                bubblesColor: BubblesColor(
+                                  dotPrimaryColor: Color(0xff33b5e5),
+                                  dotSecondaryColor: Color(0xff0099cc),
+                                ),
+                                likeBuilder: (bool isLiked) {
+                                  return Icon(
+                                    Icons.live_help,
+                                    color: isLiked ? Colors.red : Colors.grey,
+                                    size: 35,
+                                  );
+                                },
+                                likeCount: 669,
+                                countBuilder:
+                                    (int count, bool isLiked, String text) {
+                                  var color =
+                                      isLiked ? Colors.red : Colors.grey;
+                                  Widget result;
+                                  if (count == 0) {
+                                    result = Text(
+                                      "0",
+                                      style: TextStyle(color: color),
+                                    );
+                                  } else
+                                    result = Text(
+                                      text,
+                                      style: TextStyle(color: color),
+                                    );
+                                  return result;
+                                },
+                              ),
+                            ],
+                          ),
+                          MyDivider3(),
+                          LikeButton(
+                            size: 35,
+                            circleColor: CircleColor(
+                                start: Color(0xff00ddff),
+                                end: Color(0xff0099cc)),
+                            bubblesColor: BubblesColor(
+                              dotPrimaryColor: Color(0xff33b5e5),
+                              dotSecondaryColor: Color(0xff0099cc),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                Icons.favorite,
+                                color: isLiked ? Colors.green : Colors.grey,
+                                size: 35,
                               );
-                            } else
-                              result = Text(
-                                text,
-                                style: TextStyle(color: color),
-                              );
-                            return result;
-                          },
-                        ),
-                      ],
+                            },
+                            likeCount: 302249,
+                            countBuilder:
+                                (int count, bool isLiked, String text) {
+                              var color = isLiked ? Colors.green : Colors.grey;
+                              Widget result;
+                              if (count == 0) {
+                                result = Text(
+                                  "0",
+                                  style: TextStyle(color: color),
+                                );
+                              } else
+                                result = Text(
+                                  text,
+                                  style: TextStyle(color: color),
+                                );
+                              return result;
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            )
+                ))
           ],
         ),
       ),
     );
   }
+
   Widget MyDivider3() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 5),

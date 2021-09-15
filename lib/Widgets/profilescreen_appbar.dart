@@ -12,12 +12,15 @@ AppBar buildAppBar(BuildContext context) {
     actions: [
       IconButton(
         icon: Icon(Icons.menu_open, color: Colors.white,),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsScreen()),
+        onPressed: () {
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return Scaffold(
+              body: SettingsScreen(),
             );
-          }
+          },
+        ));
+      },
       ),
     ],
   );

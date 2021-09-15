@@ -101,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ]),
                 )),
             Padding(padding: EdgeInsets.only(top: 10,)),
-            ChildBuildBoxHeader("Other"),
+            ChildBuildBoxHeader("Misc"),
             Container(
                 child: Container(
                   padding: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
@@ -129,6 +129,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         ChildBuildBoxIntern(Icons.payment_rounded, "Donate"),
+                        MyDivider(),
+                        ChildBuildBoxIntern(Icons.vpn_key_rounded, "Invitation keys")
 
                       ]),
                 )),

@@ -248,27 +248,31 @@ class Stockscreen extends State<NewsScreen> {
                                   'https://storage.googleapis.com/iex/api/logos/NOK.png',
                                 )),
                           ),
-                          contentPadding: EdgeInsets.all(3),
+                          contentPadding: EdgeInsets.all(5),
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.insights_rounded,
-                                    color: Color.fromRGBO(65, 157, 120, 1),
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.only(
-                                    left: 5,
-                                  )),
-                                  Text("Trending-newcomer-stock:",
-                                      style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(65, 157, 120, 1),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400)),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2.5),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.insights_rounded,
+                                      color: Colors.grey,
+                                      size: 14,
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                      left: 5,
+                                    )),
+                                    Text("Trending-newcomer-stock:",
+                                        style: TextStyle(
+                                            color:
+                                                Colors.grey,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                               ),
                               Row(
                                 children: [
@@ -280,7 +284,7 @@ class Stockscreen extends State<NewsScreen> {
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
+                                              fontSize: 20)),
                                       Text("\$80.7",
                                           style: TextStyle(
                                               color: Colors.grey[400],
@@ -289,7 +293,7 @@ class Stockscreen extends State<NewsScreen> {
                                   ),
                                   Padding(
                                       padding: EdgeInsets.only(
-                                    left: 15,
+                                    left: 10,
                                   )),
                                   Container(
                                       width: 70,

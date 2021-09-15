@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/assets/my_flutter_app_icons.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:like_button/like_button.dart';
-import 'package:flutter_app/models/stocknews.dart';
+import 'package:flutter_app/models/stocknewsmodel.dart';
 import 'package:flutter_app/Widgets/stock_news_box.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:flutter_app/models/stocknews.dart';
+
 
 
 class AnalysisScreen extends StatefulWidget {
@@ -36,14 +39,38 @@ class _TopBarState extends State<TopBar> {
 
   bool _showBackToTopButton = false;
   ScrollController _scrollController;
+
+  //StockChartWidget
   String timespan = "Today";
   TrackballBehavior _trackballBehavior;
+
+  //KeyMetricsWidget
   double _currentprice = 701.89;
   double _min = 329.88;
   double _max = 900.40;
 
+  //NewsWidget
+  var newslist;
+  bool _loading;
+
+  getNews() async{
+    News newsClass = News();
+    await newsClass.getNews();
+    newslist = newsClass.news;
+    setState(() {
+      _loading = false;
+    });
+  }
+
   @override
   void initState() {
+
+    super.initState();
+    //News
+    _loading = true;
+    getNews();
+
+    //Chart
     _trackballBehavior = TrackballBehavior(
         lineColor: Colors.grey[400],
         enable: true,
@@ -56,7 +83,7 @@ class _TopBarState extends State<TopBar> {
             borderColor: Colors.white,
             markerVisibility: TrackballVisibilityMode.visible));
     chartData = getChartData();
-    super.initState();
+    //Scroller
     _scrollController = ScrollController()
       ..addListener(() {
         setState(() {
@@ -325,16 +352,18 @@ class _TopBarState extends State<TopBar> {
               Padding(padding: EdgeInsets.only(top: 5)),
               buildSocialSpace(),
               buildScroller(),
-              Padding(padding: EdgeInsets.only(top: 15)),
-              buildBox("AI-Analysis", Icons.computer_rounded, buildAI()),
-              // buildBox("Topcomments", Icons.comment, buildtopcomments()),
-              // Padding(padding: EdgeInsets.only(top: 15)),
-              Padding(padding: EdgeInsets.only(top: 15)),
-              buildBox("Analysts", Icons.analytics_outlined, buildAnalysis()),
-              Padding(padding: EdgeInsets.only(top: 15)),
-              buildBox("News", Icons.insert_drive_file_outlined, buildNews()),
-              Padding(padding: EdgeInsets.only(top: 15)),
-              buildBox("Information", Icons.info_outline_rounded, buildInformation()),
+              buildBox("Key metrics", Icons.vpn_key_rounded, buildKeyMetrics(), false),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("Analysts", Icons.analytics_outlined, buildAnalysis(), false),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("AI-Analysis", Icons.computer_rounded, buildAIAnalysis(), false),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("Sentiment Analysis", Icons.bubble_chart_outlined, buildSentimentAnalysis(), true),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("News", Icons.insert_drive_file_outlined, buildNews(), true),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("Information", Icons.info_outline_rounded, buildInformation(), false),
+              SizedBox(height: 100,)
             ],
           ),
         ),
@@ -351,16 +380,16 @@ class _TopBarState extends State<TopBar> {
 
   //---------------------------WIDGETS----------------------------------
 
-  Widget buildBox(mytoptext, mytopicon, mybox) {
+  Widget buildBox(mytoptext, mytopicon, mybox, timechanger) {
   return Container(
     padding:
     EdgeInsets.only(top: 20, bottom: 15),
     decoration: BoxDecoration(
         color: Color(0xff191919),
-        borderRadius: BorderRadius.all(Radius.circular(14))),
+        borderRadius: BorderRadius.all(Radius.circular(12))),
     child: Column(
       children: [
-        ChildBuildBoxCategory(mytoptext, mytopicon),
+        ChildBuildBoxCategory(mytoptext, mytopicon, timechanger),
         mybox
       ],
     ),
@@ -395,15 +424,208 @@ class _TopBarState extends State<TopBar> {
      );
   }
 
-  Widget buildAI(){
-    return Container();
+  Widget buildKeyMetrics(){
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, right: 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ChildbuildInformation("Market cap:", "\$707.42 Billion"),
+          ChildbuildInformation("Dividend:", "-"),
+          ChildbuildInformation("PEG Ratio:", "358,60"),
+          MyDivider(),
+          ChildbuildKeyMetrics2("1-day:", 200.82, 799.21, 321.23),
+          ChildbuildKeyMetrics2("52-week:", _min, _max, _currentprice),
+          MyDivider(),
+          ChildbuildKeyMetrics("Bid:", "713,27", "Ask:", "703,90"),
+          ChildbuildKeyMetrics("Volume:", "4.440.048", "Aver. Vol.:", "22.970.134"),
+          MyDivider(),
+          ChildbuildKeyMetrics("Float:", "801,74M", "Shares:", "990,01M"),
+          ChildbuildKeyMetrics("Short:", "29,91M", "Short Ratio:", "1,41"),
+          MyDivider(),
+          ChildbuildKeyMetrics3(),
+        ],
+      ),
+    );
+  }
+
+  Widget ChildbuildKeyMetrics3 (){
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Intrinsic Value:",
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(left: 5,)),
+              Text(
+                "\$20.11",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          InkWell(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.redAccent),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.trending_down, color: Colors.white, size: 14,),
+                      Padding(padding: EdgeInsets.only(left: 5)),
+                      Text("Bear",
+                          style: TextStyle(color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget buildAIAnalysis(){
+    return Container(
+      height: 180,
+      width: 250,
+      child: Container(decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.all(Radius.circular(25))),
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Container(
+            padding: EdgeInsets.only(top: 70, left: 20, right: 20),
+            child: SfRadialGauge(
+
+              axes: <RadialAxis>[
+                RadialAxis(minimum: 0,maximum: 150,
+                    startAngle: 180, endAngle: 360,
+                    ranges: <GaugeRange>[
+                      GaugeRange(startValue: 0,endValue: 50,color: Colors.redAccent,startWidth: 40,endWidth: 40),
+                      GaugeRange(startValue: 50,endValue: 100,color: Colors.yellowAccent[100],startWidth: 40,endWidth: 40),
+                      GaugeRange(startValue: 100,endValue: 150,color: Colors.greenAccent,startWidth: 40,endWidth: 40),],
+                    pointers: <GaugePointer>[NeedlePointer(needleColor: Colors.grey, value:29)],
+                    // annotations: <GaugeAnnotation>[
+                    //   GaugeAnnotation(widget: Container(child:
+                    //   Text('BUY',style: TextStyle(fontSize: 50,fontWeight:FontWeight.w500, color: Colors.grey))),
+                    //       angle: 90,positionFactor: 0.5)]
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSentimentAnalysis(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(padding: EdgeInsets.only(top: 5,)),
+        ChildbuildSentimentAnalysis("StonksApp", 22),
+        Padding(padding: EdgeInsets.only(top: 20,)),
+        ChildbuildSentimentAnalysis("WallStreetBets", 58),
+        Padding(padding: EdgeInsets.only(top: 20,)),
+        ChildbuildSentimentAnalysis("News", 88),
+      ],
+    );
+  }
+
+  Widget ChildbuildSentimentAnalysis(String text, double sentimentvalue){
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, right: 25),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(right: 5,)),
+          Container(
+            width: 220,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SfLinearGauge(
+                  showTicks: false,
+                  showLabels: false,
+                  useRangeColorForAxis: true,
+                  axisTrackStyle: LinearAxisTrackStyle(thickness: 8, color: Colors.grey, edgeStyle: LinearEdgeStyle.bothCurve,
+                      gradient: LinearGradient(
+                          colors: [Colors.redAccent, Colors.greenAccent],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          stops: [0.1, 0.9],
+                          tileMode: TileMode.clamp)),
+                  minimum: 0,
+                  maximum: 100,
+                  markerPointers: [LinearWidgetPointer(value: sentimentvalue, child: Container(
+                    height: 15,
+                    width: 7.5,
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4.0)),),
+                  ))],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "negative",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        "positive",
+                        style: TextStyle(
+                          color: Colors.greenAccent,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildAnalysis(){
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -497,7 +719,7 @@ class _TopBarState extends State<TopBar> {
 
   Widget ChildbuildAnalysis(){
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: const EdgeInsets.only(left: 15, right: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -524,9 +746,9 @@ class _TopBarState extends State<TopBar> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ChildChildbuildAnalysisChartLegend("Buy:", "121 Analysts", Colors.green),
+              ChildChildbuildAnalysisChartLegend("Buy:", "121 Analysts", Colors.greenAccent),
               Padding(padding: EdgeInsets.only(top: 10,),),
-              ChildChildbuildAnalysisChartLegend("Sell:", "29 Analysts", Colors.red),
+              ChildChildbuildAnalysisChartLegend("Sell:", "29 Analysts", Colors.redAccent),
               Padding(padding: EdgeInsets.only(top: 10,),),
               ChildChildbuildAnalysisChartLegend("Hold:", "14 Analysts", Colors.white),
             ],
@@ -566,12 +788,12 @@ class _TopBarState extends State<TopBar> {
 
   Widget buildSocialSpace(){
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
       child: Container(
         padding:
         EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: Color(0xff191919),
+            color: Colors.grey[900],
             borderRadius: BorderRadius.all(Radius.circular(14))),
         child: IntrinsicHeight(
           child: Row(
@@ -601,13 +823,13 @@ class _TopBarState extends State<TopBar> {
                     ),
                     likeBuilder: (bool isLiked) {
                       return Icon(MyFlutterApp.bear,
-                        color: isLiked ? Colors.red : Colors.grey,
+                        color: isLiked ? Colors.redAccent : Colors.grey,
                         size: 35,
                       );
                     },
                     likeCount: 669,
                     countBuilder: (int count, bool isLiked, String text) {
-                      var color = isLiked ? Colors.red : Colors.grey;
+                      var color = isLiked ? Colors.redAccent : Colors.grey;
                       Widget result;
                       if (count == 0) {
                         result = Text(
@@ -636,13 +858,13 @@ class _TopBarState extends State<TopBar> {
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     Icons.favorite,
-                    color: isLiked ? Colors.green : Colors.grey,
+                    color: isLiked ? Colors.greenAccent : Colors.grey,
                     size: 35,
                   );
                 },
                 likeCount: 302249,
                 countBuilder: (int count, bool isLiked, String text) {
-                  var color = isLiked ? Colors.green : Colors.grey;
+                  var color = isLiked ? Colors.greenAccent : Colors.grey;
                   Widget result;
                   if (count == 0) {
                     result = Text(
@@ -665,15 +887,28 @@ class _TopBarState extends State<TopBar> {
   }
 
   Widget buildNews() {
-    List<Widget> forYouContainers = [];
-    for (Article article in forYou) {
-      forYouContainers.add(ForYouContainer(
-        article: article,
-      ));
-    }
 
-    return Column(
-      children: forYouContainers,
+    return _loading ? Center(
+      child: Container(
+        height: 200,
+        child: CircularProgressIndicator(),
+      ),
+    ) : Container(
+      margin: EdgeInsets.only(top: 16),
+      child: ListView.builder(
+          itemCount: 2,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return NewsTile(
+              imgUrl: newslist[index].urlToImage,
+              title: newslist[index].title,
+              desc: newslist[index].description,
+              content: newslist[index].content,
+              posturl: newslist[index].url,
+              publishedAt: newslist[index].publishedAt.toString(),
+            );
+          }),
     );
   }
 
@@ -867,44 +1102,71 @@ class _TopBarState extends State<TopBar> {
 
   Widget buildInformation() {
     return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30),
+      padding: const EdgeInsets.only(left: 25, right: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            child: Text(
+              "Tesla, Inc. (bis 1. Februar 2017 Tesla Motors) ist ein US-amerikanisches Unternehmen, das Elektroautos sowie Batteriespeicher und Photovoltaikanlagen...",
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          ChildbuildInformation2(),
+          MyDivider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Listed on the NYSE s. 17.06.2002",
+                "Listed on the NASDAQ",
                 style: TextStyle(
                   color: Colors.grey[400],
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
               Container(
                 height: 22,
-                child: Image.asset('images/nyse.png'),
+                child: Image.asset('images/nasdaq.png'),
               )
             ],
           ),
-          ChildbuildInformation("WKN:", "US88160R1014"),
-          ChildbuildInformation("Market cap:", "\$707.42 Billion"),
-          ChildbuildInformation("Dividend:", "-"),
-          ChildbuildInformation("KGV:", "953,60"),
-          ChildbuildInformation("Sector:", "EV Auto Manufacturers"),
-          ChildbuildInformation("Full Time Employees:", "70757"),
           MyDivider(),
-          ChildbuildInformation3("Bid:", "713,27 x 1000", "Ask:", "703,90 x 1000"),
-          ChildbuildInformation3("Volume:", "4.440.048", "Aver. Vol.:", "22.970.134"),
-          MyDivider(),
-          ChildbuildInformation2("52-week-span:", _min, _max, _currentprice),
+          ChildbuildInformation("(Ticker) Name:", "(TSLA) Tesla, Inc."),
+          ChildbuildInformation("ISIN:", "US88160R1014"),
+          ChildbuildInformation("Industry:", "Automotive industry"),
+          ChildbuildInformation("Revenue:", "\$31.5 billion (2020)"),
+          ChildbuildInformation("Owner:", "Elon Musk (23.1%)"),
+          ChildbuildInformation("Number of employees:", "70,757 (2020)"),
+          ChildbuildInformation("Website", "tesla.com"),
         ],
       ),
     );
   }
 
-  Widget ChildbuildInformation3(String text1, String text2, String text3, String text4,) {
+  Widget ChildbuildInformation2(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 7.5),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          "see more",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            color: Colors.blue,
+            fontWeight: FontWeight.w500,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget ChildbuildKeyMetrics(String text1, String text2, String text3, String text4,) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: Row(
@@ -933,7 +1195,7 @@ class _TopBarState extends State<TopBar> {
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.only(left: 5, right: 5)),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -962,57 +1224,62 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget ChildbuildInformation2(String toptext, min, max, current) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget ChildbuildKeyMetrics2(String toptext, min, max, current) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 5.0),
+        Container(
           child: Text(
             toptext,
             style: TextStyle(
               color: Colors.grey[400],
               fontWeight: FontWeight.w500,
-              fontSize: 14,
+              fontSize: 12,
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              min.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
+        Container(
+          height: 25,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                min.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Colors.grey,
-                inactiveTrackColor: Colors.grey,
-                trackShape: RectangularSliderTrackShape(),
-                trackHeight: 4.0,
-                thumbColor: max / 2 > current? Colors.redAccent : Colors.greenAccent,
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                overlayColor: max / 2 > current? Colors.red.withAlpha(32) : Colors.green.withAlpha(32),),
-              child: Slider(
-                value: current,
-                min: min,
-                max: max,
-                label: current.round().toString(),
-                onChanged: (double value) {},
-            )),
-            Text(
-              max.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
+              Container(
+                width: 175,
+                child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: Colors.grey,
+                    inactiveTrackColor: Colors.grey,
+                    trackShape: RectangularSliderTrackShape(),
+                    trackHeight: 3.0,
+                    thumbColor: max / 2 > current? Colors.redAccent : Colors.greenAccent,
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0),
+                    overlayColor: max / 2 > current? Colors.red.withAlpha(32) : Colors.green.withAlpha(32),),
+                  child: Slider(
+                    value: current,
+                    min: min,
+                    max: max,
+                    label: current.round().toString(),
+                    onChanged: (double value) {},
+                )),
               ),
-            ),
-          ],
+              Text(
+                max.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -1048,10 +1315,17 @@ class _TopBarState extends State<TopBar> {
   Widget buildScroller() {
     return GestureDetector(
       child: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Text(
+              "Stockinfo",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28),
+            ),
             Container(
               padding: EdgeInsets.only(top: 5, left: 10, right: 3, bottom: 5),
               decoration: BoxDecoration(
@@ -1065,12 +1339,13 @@ class _TopBarState extends State<TopBar> {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
-                        fontSize: 18),
+                        fontSize: 16),
                   ),
+                  Padding(padding: EdgeInsets.only(left: 5)),
                   Icon(
                     Icons.keyboard_arrow_down_rounded,
                     color: Colors.white,
-                    size: 35,
+                    size: 22,
                   ),
                 ],
               ),
@@ -1084,29 +1359,57 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget ChildBuildBoxCategory(String header, myicon) {
+  Widget ChildBuildBoxCategory(String header, myicon, timechanger) {
     return Container(
       child: Padding(
         padding: EdgeInsets.only(
           left: 25,
+          right: 20,
           bottom: 20,
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              myicon,
-              color: Colors.white,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  myicon,
+                  color: Colors.white,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    header,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                header,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            ),
+            timechanger == true? Container(
+                  child: InkWell(
+                    child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 5,),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black,),
+                              Text("24h",
+                                  style: TextStyle(color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                  )),
+            ): Container(),
           ],
         ),
       ),
@@ -1283,8 +1586,11 @@ class _TopBarState extends State<TopBar> {
   List<SalesData> getChartData() {
     final List<SalesData> chartData = [
       SalesData(1, 4),
-      SalesData(2011, 1),
-      SalesData(2012, 11),
+      SalesData(2008, 1),
+      SalesData(2009, 5),
+      SalesData(2010, 12),
+      SalesData(2011, 13),
+      SalesData(2012, 14),
       SalesData(2013, 15),
       SalesData(2014, 23),
       SalesData(2015, 28),

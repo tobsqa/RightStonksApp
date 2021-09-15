@@ -23,7 +23,7 @@ class _SearchbarState extends State<Searchbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Watchlist? SettingsScreen() : MaterialApp(
+    return Watchlist? WatchlistScreen() : MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
