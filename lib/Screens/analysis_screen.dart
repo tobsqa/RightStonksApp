@@ -896,7 +896,7 @@ class _TopBarState extends State<TopBar> {
     ) : Container(
       margin: EdgeInsets.only(top: 16),
       child: ListView.builder(
-          itemCount: 2,
+          itemCount: newslist.length > 3 ? newslist.length = 3 : newslist.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {

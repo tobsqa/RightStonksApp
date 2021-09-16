@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/stocknewsmodel.dart';
-import 'package:flutter_app/Screens/stock_news_screen.dart';
+import 'package:flutter_app/old_trash/stock_news_screen.dart';
 import 'package:flutter_app/Screens/stock_newsweb_screen.dart';
 
 class NewsTile extends StatelessWidget {
@@ -20,21 +20,14 @@ class NewsTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ArticleScreen(
-              // postUrl: posturl,
-                  imgUrl: imgUrl,
-                  author: author,
-                  publishedAt: publishedAt,
-                  content: content,
-                  desc: desc,
-                  title: title,
-                  posturl: posturl,
+            builder: (context) => ArticleView(
+              postUrl: posturl,
                 )));
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.5, right: 12.5),
         child: Container(
-          height: 100,
+          height: 125,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(vertical: 7.5),
           decoration: BoxDecoration(
@@ -45,7 +38,7 @@ class NewsTile extends StatelessWidget {
             children: [
               Container(
                 width: 100,
-                height: 100,
+                height: 125,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Container(
@@ -62,14 +55,12 @@ class NewsTile extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 5,
-              ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(left: 5, right: 10, top: 5, bottom: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,7 +68,7 @@ class NewsTile extends StatelessWidget {
                           Container(
                             width: 180,
                             child: Text(
-                              posturl ?? "N/A",
+                              posturl.replaceAll("https://", "") ?? "N/A",
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Colors.grey,
@@ -89,21 +80,24 @@ class NewsTile extends StatelessWidget {
                           Text(
                             publishedAt.substring(0, 10) ?? "N/A",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.white70,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
                       ),
-                      Text(
-                        title ?? "N/A",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5, right: 5),
+                        child: Text(
+                          title ?? "N/A",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                       Container(
@@ -111,6 +105,7 @@ class NewsTile extends StatelessWidget {
                         child: Text(
                           desc ?? "N/A",
                           overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
