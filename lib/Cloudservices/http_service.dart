@@ -20,7 +20,7 @@ class HttpService {
 
       return stocks;
     } else {
-      throw "Unable to retrieve stock data.";
+      throw "Unable to retrieve stock data from http_service.";
     }
   }
 }

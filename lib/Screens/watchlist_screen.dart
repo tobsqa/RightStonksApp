@@ -9,10 +9,15 @@ import 'package:flutter_app/Cloudservices/http_service.dart';
 import 'package:flutter_app/models/stock.dart';
 import 'package:flutter_app/Widgets/watchlist_stock_list.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+import 'dart:convert';
 
 class WatchlistScreen extends StatefulWidget {
   final title;
-  WatchlistScreen({this.title});
+  WatchlistScreen({Key key, this.title}) : super (key: key);
 
   @override
   _WatchlistScreenState createState() => _WatchlistScreenState();
@@ -23,7 +28,55 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
   // var _list = Stock.getWatchlist();
   bool _search = false;
   bool Searchmode = false;
+  bool loading = true;
   HttpService httpService = HttpService();
+
+  StompClient stompClient;
+  final socketUrl = 'http://192.168.56.1:8080/ws-message';
+  String message = '';
+  List<Stock> stockList;
+  void onConnect(StompClient client) {
+    client.subscribe(
+        destination: '/topic/message',
+        callback: (StompFrame frame) {
+          if (frame.body != null) {
+            Map<String, dynamic> obj = json.decode(frame.body);
+            List<Stock> stocks = new List<Stock>();
+            for (int i = 0; i < obj['stock'].length; i++) {
+              Stock stock = new Stock(
+                  company: obj['stock'][i]['name'],
+                  symbol: obj['stock'][i]['symbol'],
+                  price: obj['stock'][i]['price'],
+                  chg: obj['stock'][i]['chg']);
+              stocks.add(stock);
+            }
+            setState(() => stockList = stocks);
+            print(stockList);
+          }
+        });
+    client.send(destination: '/app/hello', body: "dimuthu");
+  }
+
+  void onConnectCallback(StompFrame connectFrame) {
+    print('client is connected and ready');
+    onConnect(stompClient);
+    loading = false;
+    print(loading);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (stompClient == null) {
+      stompClient = StompClient(
+          config: StompConfig.SockJS(
+            url: socketUrl,
+            onConnect: onConnectCallback,
+            onWebSocketError: (dynamic error) => print(error.toString()),
+          ));
+      stompClient.activate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,25 +192,20 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
   Widget CurrentList() {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
-      child: FutureBuilder(
-        future: httpService.getStocks(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Stock>> stockdata) {
-          if (stockdata.hasData) {
-            List<Stock> stocks = stockdata.data;
-            return SizedBox(
+      child: loading ? Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Center(child: CircularProgressIndicator()),
+      ) : SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: StockList(
-                  stocks: stocks,
-                ));
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-        },
-      ),
-    );
+                  stocks: stockList,
+    )));
+  }
+  @override
+  void dispose() {
+    if (stompClient != null) {
+      stompClient.deactivate();
+    }
+    super.dispose();
   }
 }

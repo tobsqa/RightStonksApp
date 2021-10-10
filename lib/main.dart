@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Cloudservices/IEX_cloud.dart';
 import 'package:flutter_app/models/authservice.dart';
 import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/models/wrapper.dart';

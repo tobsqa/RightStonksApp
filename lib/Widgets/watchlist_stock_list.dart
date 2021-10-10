@@ -5,6 +5,10 @@ class StockList extends StatelessWidget {
   final List<Stock> stocks;
   bool _percent = true;
   StockList({this.stocks});
+  final circlecolor = Colors.black;
+  void current_color(){
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +17,9 @@ class StockList extends StatelessWidget {
         builder: (context, StateSetter setState) => ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) {
-              return Divider(color: Colors.grey[400], height: 10,);
+              return Divider(color: Colors.grey[400], height: 7.5,);
             },
-            itemCount: this.stocks.length,
+            itemCount: stocks != null ? this.stocks.length : 0,
             itemBuilder: (context, index) {
               final stock = this.stocks[index];
 
@@ -25,47 +29,67 @@ class StockList extends StatelessWidget {
                       color: Colors.transparent,
                       child: InkWell(
                           child: Container(
-                              margin: EdgeInsets.only(right: 7, left: 7),
-                              child: ListTile(
-                                  contentPadding: EdgeInsets.all(10),
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text("${stock.company}",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.w500)),
-                                      Text("\$${stock.price}",
-                                          style: TextStyle(
-                                              color: Colors.grey[400],
-                                              fontSize: 20))
-                                    ],
+                              margin: EdgeInsets.only(left: 10),
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            width: 260,
+                                            child: Text("${stock.company}",
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w500)),
+                                          ),
+                                              Text("\$${stock.price}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey[400],
+                                                      fontSize: 18)),
+                                        ],
                                   ),
-                                  trailing: Container(
-                                      width: 80,
-                                      height: 35,
-                                      child: Material(
-                                          color: stock.chg.contains("-")
-                                              ? (Colors.red)
-                                              : (Colors.green),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.circle, size: 8, color: circlecolor),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10),
                                               child: Container(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                      _percent
-                                                          ? (stock.chg)
-                                                          : (stock.price),
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.white))),
-                                              onTap: () => setState(
-                                                  () => (_percent = !_percent))))))),
+                                                child: Container(
+                                                    width: 80,
+                                                    height: 35,
+                                                    child: Material(
+                                                        color: stock.chg.contains("-")
+                                                            ? (Colors.red)
+                                                            : (Colors.green),
+                                                        borderRadius:
+                                                        BorderRadius.circular(8),
+                                                        child: InkWell(
+                                                            borderRadius:
+                                                            BorderRadius.circular(8),
+                                                            child: Container(
+                                                                alignment: Alignment.center,
+                                                                child: Text(
+                                                                    _percent
+                                                                        ? (stock.chg)
+                                                                        : (stock.price),
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        Colors.white))),
+                                                            onTap: () => setState(
+                                                                    () => (_percent = !_percent))))),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )),
                           onTap: () {
                             print(stock.company);
                             print(stock.symbol);

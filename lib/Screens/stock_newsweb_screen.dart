@@ -39,7 +39,7 @@ class _ArticleViewState extends State<ArticleView> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Icon(Icons.bookmark_outline_rounded,))
         ],
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         elevation: 0.0,
       ),
       body: Stack(
@@ -64,7 +64,7 @@ class _ArticleViewState extends State<ArticleView> {
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                       color: Colors.grey[900],
-                      borderRadius: BorderRadius.all(Radius.circular(14))),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
                   child: IntrinsicHeight(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

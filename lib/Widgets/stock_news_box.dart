@@ -8,12 +8,48 @@ class NewsTile extends StatelessWidget {
 
   NewsTile(
       {this.imgUrl,
-      this.desc,
-      this.title,
-      this.publishedAt,
-      this.content,
-      this.author,
-      @required this.posturl});
+        this.desc,
+        this.title,
+        this.publishedAt,
+        this.content,
+        this.author,
+        @required this.posturl});
+
+  static String displayTimeAgoFromTimestamp(String publishedAt, {bool numericDates = true}) {
+    DateTime date = DateTime.parse(publishedAt);
+    final date2 = DateTime.now();
+    final difference = date2.difference(date);
+
+    if ((difference.inDays / 365).floor() >= 2) {
+      return '${(difference.inDays / 365).floor()} years ago';
+    } else if ((difference.inDays / 365).floor() >= 1) {
+      return (numericDates) ? '1 year ago' : 'Last year';
+    } else if ((difference.inDays / 30).floor() >= 2) {
+      return '${(difference.inDays / 365).floor()} months ago';
+    } else if ((difference.inDays / 30).floor() >= 1) {
+      return (numericDates) ? '1 month ago' : 'Last month';
+    } else if ((difference.inDays / 7).floor() >= 2) {
+      return '${(difference.inDays / 7).floor()} weeks ago';
+    } else if ((difference.inDays / 7).floor() >= 1) {
+      return (numericDates) ? '1 week ago' : 'Last week';
+    } else if (difference.inDays >= 2) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inDays >= 1) {
+      return (numericDates) ? '1 day ago' : 'Yesterday';
+    } else if (difference.inHours >= 2) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inHours >= 1) {
+      return (numericDates) ? '1 hour ago' : 'An hour ago';
+    } else if (difference.inMinutes >= 2) {
+      return '${difference.inMinutes} minutes ago';
+    } else if (difference.inMinutes >= 1) {
+      return (numericDates) ? '1 minute ago' : 'A minute ago';
+    } else if (difference.inSeconds >= 3) {
+      return '${difference.inSeconds} seconds ago';
+    } else {
+      return 'Just now';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,27 +63,27 @@ class NewsTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 12.5, right: 12.5),
         child: Container(
-          height: 125,
+          height: 100,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(vertical: 7.5),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(20),
             color: Colors.grey[900],
           ),
           child: Row(
             children: [
               Container(
                 width: 100,
-                height: 125,
+                height: 100,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[700],
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           imgUrl ?? "N/A",
                           fit: BoxFit.fitHeight,
@@ -68,7 +104,7 @@ class NewsTile extends StatelessWidget {
                           Container(
                             width: 180,
                             child: Text(
-                              posturl.replaceAll("https://", "") ?? "N/A",
+                              posturl.replaceAll("https://", "").replaceAll("www.", "") ?? "N/A",
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Colors.grey,
@@ -78,7 +114,7 @@ class NewsTile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            publishedAt.substring(0, 10) ?? "N/A",
+                            displayTimeAgoFromTimestamp(publishedAt) ?? "N/A",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -95,8 +131,8 @@ class NewsTile extends StatelessWidget {
                           maxLines: 2,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w400,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -105,7 +141,7 @@ class NewsTile extends StatelessWidget {
                         child: Text(
                           desc ?? "N/A",
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                          maxLines: 1,
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 12,

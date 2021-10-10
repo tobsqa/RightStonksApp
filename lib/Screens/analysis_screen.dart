@@ -1,16 +1,20 @@
 import 'dart:ui';
+import 'package:flutter_app/Cloudservices/IEX_cloud.dart';
 import 'package:flutter_app/Screens/screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Widgets/stock_analysts_widget.dart';
 import 'package:flutter_app/assets/my_flutter_app_icons.dart';
+import 'package:flutter_app/models/analysts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:like_button/like_button.dart';
 import 'package:flutter_app/models/stocknewsmodel.dart';
 import 'package:flutter_app/Widgets/stock_news_box.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:flutter_app/models/stocknews.dart';
-
-
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_app/Widgets/edwinisteinhs.dart';
 
 class AnalysisScreen extends StatefulWidget {
   @override
@@ -40,6 +44,11 @@ class _TopBarState extends State<TopBar> {
   bool _showBackToTopButton = false;
   ScrollController _scrollController;
 
+  //stockprice
+  IEXCloudServicePrice iexcloudprice = IEXCloudServicePrice();
+  // IEXCloudServiceAnalysts iexcloudanalysts = IEXCloudServiceAnalysts();
+
+
   //StockChartWidget
   String timespan = "Today";
   TrackballBehavior _trackballBehavior;
@@ -53,7 +62,7 @@ class _TopBarState extends State<TopBar> {
   var newslist;
   bool _loading;
 
-  getNews() async{
+  getNews() async {
     News newsClass = News();
     await newsClass.getNews();
     newslist = newsClass.news;
@@ -64,7 +73,6 @@ class _TopBarState extends State<TopBar> {
 
   @override
   void initState() {
-
     super.initState();
     //News
     _loading = true;
@@ -197,7 +205,9 @@ class _TopBarState extends State<TopBar> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back_rounded),
             color: Colors.white,
-            onPressed: () {}),
+            onPressed: () {
+              IEXCloudServicePrice().getData();
+            }),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -316,13 +326,30 @@ class _TopBarState extends State<TopBar> {
                           children: [
                             Icon(Icons.wb_sunny_rounded, color: Colors.white),
                             Padding(padding: EdgeInsets.only(left: 10)),
-                            Text(
-                              "\$1234.56",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            FutureBuilder<String>(
+                              future: iexcloudprice.getData(),
+                              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                if (snapshot.hasData) {
+                                    return Text(
+                                      "\$${snapshot.data}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                }
+                                else {
+                                  return const Text(
+                                    "---",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }
+                              }
                             ),
                           ],
                         ),
@@ -352,18 +379,32 @@ class _TopBarState extends State<TopBar> {
               Padding(padding: EdgeInsets.only(top: 5)),
               buildSocialSpace(),
               buildScroller(),
-              buildBox("Key metrics", Icons.vpn_key_rounded, buildKeyMetrics(), false),
+              buildBox("Key metrics", Icons.vpn_key_rounded, buildKeyMetrics(),
+                  false),
               Padding(padding: EdgeInsets.only(top: 10)),
-              buildBox("Analysts", Icons.analytics_outlined, buildAnalysis(), false),
+              buildBox(
+                  "Analysts", Icons.analytics_outlined, AnalysisWidget(), false),
               Padding(padding: EdgeInsets.only(top: 10)),
-              buildBox("AI-Analysis", Icons.computer_rounded, buildAIAnalysis(), false),
+              buildBox("Whale/Insider behaviour", Icons.monetization_on_rounded,
+                  buildWhaleBehaviour(), false),
               Padding(padding: EdgeInsets.only(top: 10)),
-              buildBox("Sentiment Analysis", Icons.bubble_chart_outlined, buildSentimentAnalysis(), true),
+              buildBox("AI-Analysis", Icons.computer_rounded, buildAIAnalysis(),
+                  false),
               Padding(padding: EdgeInsets.only(top: 10)),
-              buildBox("News", Icons.insert_drive_file_outlined, buildNews(), true),
+              buildBox("Sentiment Analysis", Icons.bubble_chart_outlined,
+                  buildSentimentAnalysis(), true),
               Padding(padding: EdgeInsets.only(top: 10)),
-              buildBox("Information", Icons.info_outline_rounded, buildInformation(), false),
-              SizedBox(height: 100,)
+              buildBox(
+                  "News", Icons.insert_drive_file_outlined, buildNews(), false),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("Information", Icons.info_outline_rounded,
+                  buildInformation(), false),
+              Padding(padding: EdgeInsets.only(top: 10)),
+              buildBox("EDWWIIIN", Icons.celebration,
+                  EdwinWidget(), false),
+              SizedBox(
+                height: 100,
+              )
             ],
           ),
         ),
@@ -374,38 +415,51 @@ class _TopBarState extends State<TopBar> {
               elevation: 0.0,
               onPressed: _scrollToTop,
               backgroundColor: Colors.blue.shade300,
-              child: const Icon(Icons.keyboard_arrow_up_rounded, size: 40,),),
+              child: const Icon(
+                Icons.keyboard_arrow_up_rounded,
+                size: 40,
+              ),
+            ),
     );
   }
 
   //---------------------------WIDGETS----------------------------------
 
   Widget buildBox(mytoptext, mytopicon, mybox, timechanger) {
-  return Container(
-    padding:
-    EdgeInsets.only(top: 20, bottom: 15),
-    decoration: BoxDecoration(
-        color: Color(0xff191919),
-        borderRadius: BorderRadius.all(Radius.circular(12))),
-    child: Column(
-      children: [
-        ChildBuildBoxCategory(mytoptext, mytopicon, timechanger),
-        mybox
-      ],
-    ),
-  );
+    return Container(
+      padding: EdgeInsets.only(top: 20, bottom: 15),
+      decoration: BoxDecoration(
+          color: Color(0xff191919),
+          borderRadius: BorderRadius.all(Radius.circular(12))),
+      child: Column(
+        children: [
+          ChildBuildBoxCategory(mytoptext, mytopicon, timechanger),
+          mybox
+        ],
+      ),
+    );
   }
 
   Widget MyDivider() {
     return Divider(
-      height: 30,
+      height: 20,
+      color: Colors.grey,
+    );
+  }
+
+  Widget MyDividerStandard() {
+    return Divider(
+      height: 10,
       color: Colors.grey,
     );
   }
 
   Widget MyDivider2() {
     return Padding(
-      padding: const EdgeInsets.only(left: 45, right: 45,),
+      padding: const EdgeInsets.only(
+        left: 45,
+        right: 45,
+      ),
       child: Divider(
         height: 30,
         color: Colors.grey,
@@ -414,17 +468,17 @@ class _TopBarState extends State<TopBar> {
   }
 
   Widget MyDivider3() {
-     return Padding(
-       padding: const EdgeInsets.only(top: 5, bottom: 5),
-       child: VerticalDivider(
-         thickness: 2,
-         width: 2,
-         color: Colors.grey,
-        ),
-     );
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      child: VerticalDivider(
+        thickness: 2,
+        width: 2,
+        color: Colors.grey,
+      ),
+    );
   }
 
-  Widget buildKeyMetrics(){
+  Widget buildKeyMetrics() {
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 25),
       child: Column(
@@ -438,7 +492,8 @@ class _TopBarState extends State<TopBar> {
           ChildbuildKeyMetrics2("52-week:", _min, _max, _currentprice),
           MyDivider(),
           ChildbuildKeyMetrics("Bid:", "713,27", "Ask:", "703,90"),
-          ChildbuildKeyMetrics("Volume:", "4.440.048", "Aver. Vol.:", "22.970.134"),
+          ChildbuildKeyMetrics(
+              "Volume:", "4.440.048", "Aver. Vol.:", "22.970.134"),
           MyDivider(),
           ChildbuildKeyMetrics("Float:", "801,74M", "Shares:", "990,01M"),
           ChildbuildKeyMetrics("Short:", "29,91M", "Short Ratio:", "1,41"),
@@ -449,7 +504,217 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget ChildbuildKeyMetrics3 (){
+  Widget ChildbuildWhaleBehavior(String date, String name, String value, type) {
+    return Column(
+      children: [
+        MyDivider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Container(
+                    width: 80,
+                    child: Text(
+                      date,
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                  left: 5,
+                )),
+                Container(
+                  width: 110,
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 80,
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                type
+                    ? InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.green),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 5, right: 5, top: 3, bottom: 3),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.trending_up,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Buy",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ))
+                    : InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.redAccent),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 5, right: 5, top: 3, bottom: 3),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.trending_down,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Sell",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildWhaleBehaviour() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.grey[400],
+                        size: 12,
+                      ),
+                      Text(
+                        " DATE",
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.person_rounded,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      Text(
+                        " NAME",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.monetization_on_rounded,
+                          color: Colors.grey[400], size: 12),
+                      Text(
+                        " VALUE",
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.bar_chart,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      Text(
+                        " TYPE",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            children: [
+              ChildbuildWhaleBehavior("25.09.2021", "Jeff Bezos", "5.3B \$", false),
+              ChildbuildWhaleBehavior("24.09.2021", "Elon Musk", "1.0B \$", true),
+              ChildbuildWhaleBehavior("23.09.2021", "Larry Page", "2.3B \$", true),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget ChildbuildKeyMetrics3() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: Row(
@@ -466,7 +731,10 @@ class _TopBarState extends State<TopBar> {
                   fontSize: 12,
                 ),
               ),
-              Padding(padding: EdgeInsets.only(left: 5,)),
+              Padding(
+                  padding: EdgeInsets.only(
+                left: 5,
+              )),
               Text(
                 "\$20.11",
                 style: TextStyle(
@@ -479,54 +747,79 @@ class _TopBarState extends State<TopBar> {
           ),
           InkWell(
               child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.redAccent),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.trending_down, color: Colors.white, size: 14,),
-                      Padding(padding: EdgeInsets.only(left: 5)),
-                      Text("Bear",
-                          style: TextStyle(color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold)),
-                    ],
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.redAccent),
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.trending_down,
+                    color: Colors.white,
+                    size: 14,
                   ),
-                ),
-              )),
+                  Padding(padding: EdgeInsets.only(left: 5)),
+                  Text("Bear",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          )),
         ],
       ),
     );
   }
 
-  Widget buildAIAnalysis(){
+  Widget buildAIAnalysis() {
     return Container(
       height: 180,
       width: 250,
-      child: Container(decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(25))),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(25))),
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Container(
             padding: EdgeInsets.only(top: 70, left: 20, right: 20),
             child: SfRadialGauge(
-
               axes: <RadialAxis>[
-                RadialAxis(minimum: 0,maximum: 150,
-                    startAngle: 180, endAngle: 360,
-                    ranges: <GaugeRange>[
-                      GaugeRange(startValue: 0,endValue: 50,color: Colors.redAccent,startWidth: 40,endWidth: 40),
-                      GaugeRange(startValue: 50,endValue: 100,color: Colors.yellowAccent[100],startWidth: 40,endWidth: 40),
-                      GaugeRange(startValue: 100,endValue: 150,color: Colors.greenAccent,startWidth: 40,endWidth: 40),],
-                    pointers: <GaugePointer>[NeedlePointer(needleColor: Colors.grey, value:29)],
-                    // annotations: <GaugeAnnotation>[
-                    //   GaugeAnnotation(widget: Container(child:
-                    //   Text('BUY',style: TextStyle(fontSize: 50,fontWeight:FontWeight.w500, color: Colors.grey))),
-                    //       angle: 90,positionFactor: 0.5)]
+                RadialAxis(
+                  minimum: 0, maximum: 150,
+                  startAngle: 180, endAngle: 360,
+                  ranges: <GaugeRange>[
+                    GaugeRange(
+                        startValue: 0,
+                        endValue: 50,
+                        color: Colors.redAccent,
+                        startWidth: 40,
+                        endWidth: 40),
+                    GaugeRange(
+                        startValue: 50,
+                        endValue: 100,
+                        color: Colors.yellowAccent[100],
+                        startWidth: 40,
+                        endWidth: 40),
+                    GaugeRange(
+                        startValue: 100,
+                        endValue: 150,
+                        color: Colors.greenAccent,
+                        startWidth: 40,
+                        endWidth: 40),
+                  ],
+                  pointers: <GaugePointer>[
+                    NeedlePointer(needleColor: Colors.grey, value: 29)
+                  ],
+                  // annotations: <GaugeAnnotation>[
+                  //   GaugeAnnotation(widget: Container(child:
+                  //   Text('BUY',style: TextStyle(fontSize: 50,fontWeight:FontWeight.w500, color: Colors.grey))),
+                  //       angle: 90,positionFactor: 0.5)]
                 ),
               ],
             ),
@@ -536,21 +829,30 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget buildSentimentAnalysis(){
+  Widget buildSentimentAnalysis() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Padding(padding: EdgeInsets.only(top: 5,)),
+        Padding(
+            padding: EdgeInsets.only(
+          top: 5,
+        )),
         ChildbuildSentimentAnalysis("StonksApp", 22),
-        Padding(padding: EdgeInsets.only(top: 20,)),
+        Padding(
+            padding: EdgeInsets.only(
+          top: 20,
+        )),
         ChildbuildSentimentAnalysis("WallStreetBets", 58),
-        Padding(padding: EdgeInsets.only(top: 20,)),
+        Padding(
+            padding: EdgeInsets.only(
+          top: 20,
+        )),
         ChildbuildSentimentAnalysis("News", 88),
       ],
     );
   }
 
-  Widget ChildbuildSentimentAnalysis(String text, double sentimentvalue){
+  Widget ChildbuildSentimentAnalysis(String text, double sentimentvalue) {
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 25),
       child: Row(
@@ -564,7 +866,10 @@ class _TopBarState extends State<TopBar> {
               fontSize: 16,
             ),
           ),
-          Padding(padding: EdgeInsets.only(right: 5,)),
+          Padding(
+              padding: EdgeInsets.only(
+            right: 5,
+          )),
           Container(
             width: 220,
             child: Column(
@@ -574,7 +879,10 @@ class _TopBarState extends State<TopBar> {
                   showTicks: false,
                   showLabels: false,
                   useRangeColorForAxis: true,
-                  axisTrackStyle: LinearAxisTrackStyle(thickness: 8, color: Colors.grey, edgeStyle: LinearEdgeStyle.bothCurve,
+                  axisTrackStyle: LinearAxisTrackStyle(
+                      thickness: 8,
+                      color: Colors.grey,
+                      edgeStyle: LinearEdgeStyle.bothCurve,
                       gradient: LinearGradient(
                           colors: [Colors.redAccent, Colors.greenAccent],
                           begin: Alignment.centerLeft,
@@ -583,11 +891,19 @@ class _TopBarState extends State<TopBar> {
                           tileMode: TileMode.clamp)),
                   minimum: 0,
                   maximum: 100,
-                  markerPointers: [LinearWidgetPointer(value: sentimentvalue, child: Container(
-                    height: 15,
-                    width: 7.5,
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(4.0)),),
-                  ))],
+                  markerPointers: [
+                    LinearWidgetPointer(
+                        value: sentimentvalue,
+                        child: Container(
+                          height: 15,
+                          width: 7.5,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
+                          ),
+                        ))
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
@@ -621,148 +937,15 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget buildAnalysis(){
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                Container(
-                  width: 300,
-                  child: Text(
-                    "The stock is covered by 67 analysts. The average assesment is:",
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              Padding(padding: EdgeInsets.only(top: 10,)),
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        "\$",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                      Container(height: 10,)
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.only(left: 5,)),
-                  Text(
-                      "634.30",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(padding: EdgeInsets.only(top: 10,)),
-              ChildbuildAnalysis2("Highest assesment:", 1200.28),
-              ChildbuildAnalysis2("Lowest assesment:", 321.1),
-              Padding(padding: EdgeInsets.only(top: 10,),),
-            ],
-          ),
-        ),
-        ChildbuildAnalysis(),
-      ],
-    );
-  }
-
-  Widget ChildbuildAnalysis2(String text, double assesment){
-    return Row(
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: Colors.grey[400],
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
-        ),
-        Padding(padding: EdgeInsets.only(left: 5,)),
-        Column(
-          children: [
-            Text(
-              "\$",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-            Container(height: 5,)
-          ],
-        ),
-        Padding(padding: EdgeInsets.only(left: 2.5,)),
-        Text(
-          assesment.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget ChildbuildAnalysis(){
-    return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: 110,
-            width: 110,
-            child: Container(
-                child: SfCircularChart(
-                    margin: const EdgeInsets.all(0),
-                    // legend: Legend(
-                    //     isVisible: true,
-                    //     position: LegendPosition.right,
-                    //     textStyle: TextStyle(
-                    //         color: Colors.white, fontWeight: FontWeight.w500)),
-                    series: <CircularSeries>[
-                      DoughnutSeries<PieChartData, String>(
-                          dataSource: getPieData(),
-                          pointColorMapper: (PieChartData data, _) => data.color,
-                          xValueMapper: (PieChartData data, _) => data.x,
-                          yValueMapper: (PieChartData data, _) => data.y)
-                    ])),
-          ),
-          Padding(padding: EdgeInsets.only(left: 5,),),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ChildChildbuildAnalysisChartLegend("Buy:", "121 Analysts", Colors.greenAccent),
-              Padding(padding: EdgeInsets.only(top: 10,),),
-              ChildChildbuildAnalysisChartLegend("Sell:", "29 Analysts", Colors.redAccent),
-              Padding(padding: EdgeInsets.only(top: 10,),),
-              ChildChildbuildAnalysisChartLegend("Hold:", "14 Analysts", Colors.white),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget ChildChildbuildAnalysisChartLegend(String text, String text2, color){
+  Widget ChildChildbuildAnalysisChartLegend(String text, String text2, color) {
     return Container(
       child: Row(
         children: [
-          Icon(Icons.circle, size: 14, color: color,),
+          Icon(
+            Icons.circle,
+            size: 14,
+            color: color,
+          ),
           Padding(padding: EdgeInsets.only(left: 5)),
           Text(
             text,
@@ -786,15 +969,14 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget buildSocialSpace(){
+  Widget buildSocialSpace() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
       child: Container(
-        padding:
-        EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
             color: Colors.grey[900],
-            borderRadius: BorderRadius.all(Radius.circular(14))),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
         child: IntrinsicHeight(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -802,11 +984,19 @@ class _TopBarState extends State<TopBar> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(Icons.mode_comment_outlined, color: Colors.grey, size: 30,),
-                  Padding(padding: EdgeInsets.only(left: 5,)),
-                  Text("102", style: TextStyle(
-                    color: Colors.grey
-                  ),)
+                  Icon(
+                    Icons.mode_comment_outlined,
+                    color: Colors.grey,
+                    size: 30,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(
+                    left: 5,
+                  )),
+                  Text(
+                    "102",
+                    style: TextStyle(color: Colors.grey),
+                  )
                 ],
               ),
               MyDivider3(),
@@ -815,14 +1005,15 @@ class _TopBarState extends State<TopBar> {
                 children: [
                   LikeButton(
                     size: 35,
-                    circleColor:
-                    CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                    circleColor: CircleColor(
+                        start: Color(0xff00ddff), end: Color(0xff0099cc)),
                     bubblesColor: BubblesColor(
                       dotPrimaryColor: Color(0xff33b5e5),
                       dotSecondaryColor: Color(0xff0099cc),
                     ),
                     likeBuilder: (bool isLiked) {
-                      return Icon(MyFlutterApp.bear,
+                      return Icon(
+                        MyFlutterApp.bear,
                         color: isLiked ? Colors.redAccent : Colors.grey,
                         size: 35,
                       );
@@ -849,8 +1040,8 @@ class _TopBarState extends State<TopBar> {
               MyDivider3(),
               LikeButton(
                 size: 35,
-                circleColor:
-                CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                circleColor: CircleColor(
+                    start: Color(0xff00ddff), end: Color(0xff0099cc)),
                 bubblesColor: BubblesColor(
                   dotPrimaryColor: Color(0xff33b5e5),
                   dotSecondaryColor: Color(0xff0099cc),
@@ -887,28 +1078,71 @@ class _TopBarState extends State<TopBar> {
   }
 
   Widget buildNews() {
+    return _loading
+        ? Center(
+            child: Container(
+              height: 200,
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : Column(
+          children: [
+            ChildbuildNews("Business", "Stock"),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Container(
+                  child: ListView.builder(
+                      itemCount:
+                          newslist.length > 3 ? newslist.length = 3 : newslist.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return NewsTile(
+                          imgUrl: newslist[index].urlToImage,
+                          title: newslist[index].title,
+                          desc: newslist[index].description,
+                          content: newslist[index].content,
+                          posturl: newslist[index].url,
+                          publishedAt: newslist[index].publishedAt.toString(),
+                        );
+                      }),
+                ),
+            ),
+          ],
+        );
+  }
 
-    return _loading ? Center(
-      child: Container(
-        height: 200,
-        child: CircularProgressIndicator(),
+  Widget ChildbuildNews(String text1, String text2) {
+    return Container(
+      child: DefaultTabController(
+        length: 2,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 100.0),
+          height: 30.0,
+          decoration: BoxDecoration(
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          child: TabBar(
+            indicator: BubbleTabIndicator(
+              tabBarIndicatorSize: TabBarIndicatorSize.tab,
+              indicatorHeight: 25.0,
+              indicatorColor: Colors.grey[700],
+            ),
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.grey,
+            tabs: <Widget>[
+              Text(text1, style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),),
+              Text(text2, style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),),
+            ],
+            onTap: (index) {},
+          ),
+        ),
       ),
-    ) : Container(
-      margin: EdgeInsets.only(top: 16),
-      child: ListView.builder(
-          itemCount: newslist.length > 3 ? newslist.length = 3 : newslist.length,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return NewsTile(
-              imgUrl: newslist[index].urlToImage,
-              title: newslist[index].title,
-              desc: newslist[index].description,
-              content: newslist[index].content,
-              posturl: newslist[index].url,
-              publishedAt: newslist[index].publishedAt.toString(),
-            );
-          }),
     );
   }
 
@@ -917,16 +1151,17 @@ class _TopBarState extends State<TopBar> {
         'f9cb98001426?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib='
         'rb-1.2.1&auto=format&fit=crop&w=1050&q=80');
     return Container(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
-          Widget>[
-        Container(
-            padding: EdgeInsets.only(right: 15, left: 15),
-            // child: Container(
-            //   padding:
-            //       EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
-            //   decoration: BoxDecoration(
-            //       color: Colors.grey[900],
-            //       borderRadius: BorderRadius.all(Radius.circular(12))),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(right: 15, left: 15),
+              // child: Container(
+              //   padding:
+              //       EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 10),
+              //   decoration: BoxDecoration(
+              //       color: Colors.grey[900],
+              //       borderRadius: BorderRadius.all(Radius.circular(12))),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -1096,7 +1331,7 @@ class _TopBarState extends State<TopBar> {
                     ),
                   ]),
             ),
-      ]),
+          ]),
     );
   }
 
@@ -1148,7 +1383,7 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget ChildbuildInformation2(){
+  Widget ChildbuildInformation2() {
     return Padding(
       padding: const EdgeInsets.only(top: 7.5),
       child: Align(
@@ -1166,9 +1401,14 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
-  Widget ChildbuildKeyMetrics(String text1, String text2, String text3, String text4,) {
+  Widget ChildbuildKeyMetrics(
+    String text1,
+    String text2,
+    String text3,
+    String text4,
+  ) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
+      padding: const EdgeInsets.only(top: 3.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1255,20 +1495,26 @@ class _TopBarState extends State<TopBar> {
                 width: 175,
                 child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: Colors.grey,
-                    inactiveTrackColor: Colors.grey,
-                    trackShape: RectangularSliderTrackShape(),
-                    trackHeight: 3.0,
-                    thumbColor: max / 2 > current? Colors.redAccent : Colors.greenAccent,
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0),
-                    overlayColor: max / 2 > current? Colors.red.withAlpha(32) : Colors.green.withAlpha(32),),
-                  child: Slider(
-                    value: current,
-                    min: min,
-                    max: max,
-                    label: current.round().toString(),
-                    onChanged: (double value) {},
-                )),
+                      activeTrackColor: Colors.grey,
+                      inactiveTrackColor: Colors.grey,
+                      trackShape: RectangularSliderTrackShape(),
+                      trackHeight: 3.0,
+                      thumbColor: max / 2 > current
+                          ? Colors.redAccent
+                          : Colors.greenAccent,
+                      thumbShape:
+                          RoundSliderThumbShape(enabledThumbRadius: 5.0),
+                      overlayColor: max / 2 > current
+                          ? Colors.red.withAlpha(32)
+                          : Colors.green.withAlpha(32),
+                    ),
+                    child: Slider(
+                      value: current,
+                      min: min,
+                      max: max,
+                      label: current.round().toString(),
+                      onChanged: (double value) {},
+                    )),
               ),
               Text(
                 max.toString(),
@@ -1287,7 +1533,7 @@ class _TopBarState extends State<TopBar> {
 
   Widget ChildbuildInformation(String text1, String text2) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
+      padding: const EdgeInsets.only(top: 3.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1315,7 +1561,8 @@ class _TopBarState extends State<TopBar> {
   Widget buildScroller() {
     return GestureDetector(
       child: Padding(
-        padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
+        padding:
+            const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1389,27 +1636,35 @@ class _TopBarState extends State<TopBar> {
                 ),
               ],
             ),
-            timechanger == true? Container(
-                  child: InkWell(
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5,),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black,),
-                              Text("24h",
-                                  style: TextStyle(color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
+            timechanger == true
+                ? Container(
+                    child: InkWell(
+                        child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: 5,
                         ),
-                  )),
-            ): Container(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.black,
+                            ),
+                            Text("24h",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    )),
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -1423,24 +1678,30 @@ class _TopBarState extends State<TopBar> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           GestureDetector(
-            child: Row(
-              children: [
-                Icon(Icons.circle, color: timespan == "Live" ? Colors.red : Colors.grey, size: 10,),
-                Padding(padding: EdgeInsets.only(left: 5,)),
-                Text("Live",
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: timespan == "Live"
-                            ? Colors.white
-                            : Colors.grey)),
-              ],
-            ),
-            onTap: (){
-              setState(() {
-              timespan = "Live";
-            });}
-          ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.circle,
+                    color: timespan == "Live" ? Colors.red : Colors.grey,
+                    size: 10,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(
+                    left: 5,
+                  )),
+                  Text("Live",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              timespan == "Live" ? Colors.white : Colors.grey)),
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  timespan = "Live";
+                });
+              }),
           GestureDetector(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),

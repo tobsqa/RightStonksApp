@@ -5,6 +5,7 @@ import 'package:flutter_app/models/usertest.dart';
 import 'package:flutter_app/utils/user_preferences.dart';
 import 'package:flutter_app/Widgets/profilescreen_appbar.dart';
 import 'package:flutter_app/Widgets/profilescreen_profile.dart';
+import 'package:flutter_app/Widgets/edwinisteinhs.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 20),
           buildSelection(),
           Divider(color: Colors.grey,),
+          EdwinWidget()
         ],
       ),
       floatingActionButton: UploadFabMenu(),
